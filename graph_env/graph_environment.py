@@ -34,8 +34,8 @@ class graph_env:
         # self.in_channels,self.out_channels,self.n_blocks = get_channels(args.model)
         self.in_channels,self.out_channels,_ = net_info(args.model)
 
-        self.preserve_in_c = self.in_channels
-        self.preserve_out_c = self.out_channels
+        self.preserve_in_c = copy.deepcopy(self.in_channels)
+        self.preserve_out_c = copy.deepcopy(self.out_channels)
         self.pruned_out_c = None
         self.n_layer = n_layer
         #dataset
@@ -62,8 +62,8 @@ class graph_env:
         self.pruned_model = None
         self.preserve_ratio = torch.ones([self.n_layer])
         self.current_states = self.model_to_graph()
-        self.preserve_in_c = self.in_channels
-        self.preserve_out_c = self.out_channels
+        self.preserve_in_c = copy.deepcopy(self.in_channels)
+        self.preserve_out_c = copy.deepcopy(self.out_channels)
         self.pruned_out_c = None
 
         return self.current_states

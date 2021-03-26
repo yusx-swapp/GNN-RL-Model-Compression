@@ -248,7 +248,9 @@ def train(agent, env, output,args):
             print('-' * 40)
 
 
-def load_model(model_name,data_root):
+def load_model(model_name,data_root,device=None):
+    if device==None:
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
     if model_name == "resnet56":
         net = resnet.__dict__['resnet56']()

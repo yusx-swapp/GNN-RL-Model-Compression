@@ -207,8 +207,7 @@ def level1_graph(in_channel,feature_size,net_name='resnet',device=None):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     level_1_graphs = []
-
-    if net_name in 'resnet':
+    if 'resnet' in net_name:
         for in_c in in_channel:
             # conv 3*3 with 3 in channel
             edge_index = conv_motif(in_c)

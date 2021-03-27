@@ -28,18 +28,15 @@ def parse_args():
     parser.add_argument('--job', default='train', type=str, help='support option: train/export')
     parser.add_argument('--suffix', default=None, type=str, help='suffix to help you remember what experiment you ran')
     #graph encoder
-    parser.add_argument('--node_feature_size', default=50, type=int, help='the initial node feature size')
-    parser.add_argument('--pool_strategy', default='mean', type=str, help='pool strategy(mean/diff), defualt:mean')
-    parser.add_argument('--embedding_size', default=30, type=int, help='embedding size of DNN\'s hidden layers')
 
     # datasets and model
     parser.add_argument('--model', default='mobilenet', type=str, help='model to prune')
     parser.add_argument('--dataset', default='ILSVRC', type=str, help='dataset to use (cifar/ILSVRC)')
     parser.add_argument('--data_root', default='data', type=str, help='dataset path')
-    parser.add_argument('--preserve_ratio', default=0.5, type=float, help='preserve ratio of the model')
+    # parser.add_argument('--preserve_ratio', default=0.5, type=float, help='preserve ratio of the model')
     parser.add_argument('--lbound', default=0.2, type=float, help='minimum preserve ratio')
     parser.add_argument('--rbound', default=1., type=float, help='maximum preserve ratio')
-    parser.add_argument('--reward', default='acc_reward', type=str, help='Setting the reward')
+    # parser.add_argument('--reward', default='acc_reward', type=str, help='Setting the reward')
     parser.add_argument('--acc_metric', default='acc5', type=str, help='use acc1 or acc5')
     parser.add_argument('--use_real_val', dest='use_real_val', action='store_true')
     parser.add_argument('--ckpt_path', default=None, type=str, help='manual path of checkpoint')
@@ -51,36 +48,45 @@ def parse_args():
 
     parser.add_argument('--compression_ratio', default=0.5, type=float,
                         help='compression_ratio')
-    parser.add_argument('--pruning_method', default='cp', type=str,
-                        help='method to prune (fg/cp/cpfg for fine-grained and channel pruning)')
+    # parser.add_argument('--pruning_method', default='cp', type=str,
+    #                     help='method to prune (fg/cp/cpfg for fine-grained and channel pruning)')
     parser.add_argument('--n_calibration_batches', default=60, type=int,
                         help='n_calibration_batches')
     parser.add_argument('--n_points_per_layer', default=10, type=int,
                         help='n_points_per_layer')
     parser.add_argument('--channel_round', default=8, type=int, help='Round channel to multiple of channel_round')
-    # ddpg
 
+    # rl agent
     parser.add_argument('--g_in_size', default=20, type=int, help='initial graph node and edge feature size')
     parser.add_argument('--hidden1', default=300, type=int, help='hidden num of first fully connect layer')
     parser.add_argument('--hidden2', default=300, type=int, help='hidden num of second fully connect layer')
     parser.add_argument('--g_hidden_size', default=50, type=int, help='hidden num of second fully connect layer')
     parser.add_argument('--g_embedding_size', default=50, type=int, help='hidden num of second fully connect layer')
     parser.add_argument('--hidden_size', default=300, type=int, help='hidden num of first fully connect layer')
+    parser.add_argument('--log_interval', default=20, type=int, help='print avg reward in the interval')
+    parser.add_argument('--max_episodes', default=10000, type=int, help='max training episodes')
+    parser.add_argument('--max_timesteps', default=1500, type=int, help='max timesteps in one episode')
+    parser.add_argument('--update_timestep', default=50, type=int, help='update policy every n timesteps')
+    parser.add_argument('--action_std', default=0.5, type=float, help='constant std for action distribution (Multivariate Normal)')
+    parser.add_argument('--K_epochs', default=80, type=int, help='update policy for K epochs')
+    parser.add_argument('--eps_clip', default=0.2, type=float, help='clip parameter for RL')
+    parser.add_argument('--gamma', default=0.99, type=float, help='discount factor')
+    parser.add_argument('--lr', default=0.0003, type=float, help='learning rate for optimizer')
 
-    parser.add_argument('--lr_c', default=1e-3, type=float, help='learning rate for actor')
-    parser.add_argument('--lr_a', default=1e-3, type=float, help='learning rate for actor')
-    parser.add_argument('--warmup', default=25, type=int,
-                        help='time without training but only filling the replay memory')
-    parser.add_argument('--discount', default=1., type=float, help='')
-    parser.add_argument('--bsize', default=64, type=int, help='minibatch size')
-    parser.add_argument('--rmsize', default=100, type=int, help='memory size for each layer')
-    parser.add_argument('--window_length', default=1, type=int, help='')
-    parser.add_argument('--tau', default=0.01, type=float, help='moving average for target network')
-    # noise (truncated normal distribution)
-    parser.add_argument('--init_delta', default=0.5, type=float,
-                        help='initial variance of truncated normal distribution')
-    parser.add_argument('--delta_decay', default=0.99, type=float,
-                        help='delta decay during exploration')
+    # parser.add_argument('--lr_c', default=1e-3, type=float, help='learning rate for actor')
+    # parser.add_argument('--lr_a', default=1e-3, type=float, help='learning rate for actor')
+    # parser.add_argument('--warmup', default=25, type=int,
+    #                     help='time without training but only filling the replay memory')
+    # parser.add_argument('--discount', default=1., type=float, help='')
+    # parser.add_argument('--bsize', default=64, type=int, help='minibatch size')
+    # parser.add_argument('--rmsize', default=100, type=int, help='memory size for each layer')
+    # parser.add_argument('--window_length', default=1, type=int, help='')
+    # parser.add_argument('--tau', default=0.01, type=float, help='moving average for target network')
+    # # noise (truncated normal distribution)
+    # parser.add_argument('--init_delta', default=0.5, type=float,
+    #                     help='initial variance of truncated normal distribution')
+    # parser.add_argument('--delta_decay', default=0.99, type=float,
+    #                     help='delta decay during exploration')
     # training
     parser.add_argument('--disable', default=None, type=str, help='cuda/cpu')
     parser.add_argument('--device', default='cuda', type=str, help='cuda/cpu')
@@ -109,28 +115,24 @@ def search(env):
     ############## Hyperparameters ##############
     env_name = "BipedalWalker-v2"
     render = False
-    solved_reward = 300         # stop training if avg_reward > solved_reward
-    log_interval = 20           # print avg reward in the interval
-    max_episodes = 10000        # max training episodes
-    max_timesteps = 1500        # max timesteps in one episode
+    solved_reward = args.solved_reward         # stop training if avg_reward > solved_reward
+    log_interval = args.log_interval           # print avg reward in the interval
+    max_episodes = args.max_episodes        # max training episodes
+    max_timesteps = args.max_timesteps        # max timesteps in one episode
 
-    update_timestep = 4000      # update policy every n timesteps
-    action_std = 0.5            # constant std for action distribution (Multivariate Normal)
-    K_epochs = 80               # update policy for K epochs
-    eps_clip = 0.2              # clip parameter for RL
-    gamma = 0.99                # discount factor
+    update_timestep = args.update_timestep      # update policy every n timesteps
+    action_std = args.action_std            # constant std for action distribution (Multivariate Normal)
+    K_epochs = args.K_epochs               # update policy for K epochs
+    eps_clip = args.eps_clip              # clip parameter for RL
+    gamma = args.gamma                # discount factor
 
-    lr = 0.0003                 # parameters for Adam optimizer
+    lr = args.lr                 # parameters for Adam optimizer
     betas = (0.9, 0.999)
 
     random_seed = None
     #############################################
 
-    # creating environment
-    # env = gym.make(env_name)
-    # state_dim = env.observation_space.shape[0]
     state_dim = args.g_in_size
-    # action_dim = env.action_space.shape[0]
     action_dim = layer_share
     if random_seed:
         print("Random Seed: {}".format(random_seed))
@@ -209,7 +211,6 @@ def train(agent, env, output,args):
         # agent pick action ...
         if episode <= args.warmup:
             action = agent.random_action()
-            # action = sample_from_truncated_normal_distribution(lower=0., upper=1., mu=env.preserve_ratio, sigma=0.5)
         else:
             action = agent.select_action(observation, episode=episode)
         #print(action)
@@ -443,7 +444,7 @@ if __name__ == "__main__":
     search(env)
     # search(agent, env, args.output, args)
 
-#python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet110 --compression_ratio 0.4 --pruning_method cp --train_episode 100 --log_dir ./logs
+#python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet110 --compression_ratio 0.4 --log_dir ./logs
 #python -W ignore gnnrl_network_pruning.py --lr_c 0.01 --lr_a 0.01 --dataset cifar100 --bsize 32 --model shufflenetv2 --compression_ratio 0.2 --warmup 100 --pruning_method cp --val_size 1000 --train_episode 300 --log_dir ./logs
 #python -W ignore gnnrl_network_pruning.py --disable graph_encoder --lr_c 0.01 --lr_a 0.01 --dataset cifar10 --bsize 32 --model resnet56 --compression_ratio 0.5 --warmup 1 --pruning_method cp --val_size 1000 --train_episode 200 --log_dir ./logs3
 #python -W ignore gnnrl_network_pruning.py --lr_c 0.01 --lr_a 0.01 --dataset ILSVRC --bsize 32 --model mobilenet --compression_ratio 0.25 --warmup 100 --pruning_method cp --val_size 1000 --train_episode 300 --log_dir ./logs --data_root ../code/data/datasets

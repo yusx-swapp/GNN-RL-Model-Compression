@@ -5,8 +5,8 @@ GNN-RL Compression: Topology-Aware Network Pruning using Multi-stage Graph Embed
 
 Current code base is tested under following environment:
 
-1. Python   3.7.9
-2. PyTorch  1.7.0 (cuda 11.0)
+1. Python   3.8
+2. PyTorch  1.8.0 (cuda 11.1)
 3. torchvision 0.7.0
 4. [torch-geometric](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html#) 1.6.1
 

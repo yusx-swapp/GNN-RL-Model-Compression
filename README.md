@@ -10,17 +10,54 @@ Current code base is tested under following environment:
 3. torchvision 0.7.0
 4. [torch-geometric](https://pytorch-geometric.readthedocs.io/en/latest/notes/installation.html#) 1.6.1
 
-## Training GNN-RL
+## GNN-RL Channel Pruning
+In this work, we compress DNNs by performing FLOPs-constrained channel pruning (prunes Conv filters) on Conv layers. The GNN-RL has been tested on over-parameterized and mobile-friendly DNNs with different datasets (CIFAR-10 and ImageNet).
+### CIFAR-10
+In this subsection, DNNs are trained on CIFAR-10 since we observe a positive correlation between the pre-fine-tune accuracy and the post-fine-tuning accuracy. Pruning policies that obtain higher validation accuracy correspondingly have higher fine-tuned accuracy. It enables us to predict final model accuracy without fine-tuning, which results in an efficient and faster policy exploration.
 
-### Channel Pruning
+
+To search the strategy on ResNet-110 with channel pruning (filter pruning) on Conv layers, and prunes 40% FLOPs reduction, by running:
+   ```
+python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet110 --compression_ratio 0.4 --log_dir ./logs
+   ```
 To search the strategy on ResNet-56 with channel pruning (filter pruning) on Conv layers, and prunes 50% FLOPs reduction, by running:
   ```
-python -W ignore gnnrl_network_pruning.py --lr_c 0.01 --lr_a 0.005 --dataset cifar10 --bsize 32 --model resnet56 --compression_ratio 0.5 --warmup 30 --pruning_method cp --val_size 1000 --train_episode 200 --data_root ./data --log_dir [your log dir]
+python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet56 --compression_ratio 0.5 --log_dir ./logs
    ```
-To search the strategy on ResNet-110 with channel pruning (filter pruning) on Conv layers, and prunes 50% FLOPs reduction, by running:
+
+### ImageNet (ILSVRC-2012)
+To evaluate the GNN-RL on the ImageNet (ILSVRC-2012), you need to first download the dataset from [ImageNet](http://www.image-net.org/download-images) and export the data.
+
+Since the validation accuracy on the ImageNet dataset is sensitive to the compression ratio,
+with high compression ratios, the accuracy drops considerably without fine-tuning 
+(in some cases, the pruned model without fine-tuning has less than 1% validation accuracy).
+We highly recommend that you decompose the pruning into several stages. 
+For instance, to obtain a 49% FLOPs model, prune the target DNN two times, each with 70% FLOPs constraint~(i.e., 70% FLOPs times 70% FLOPs = 49% FLOPs).
+
+If you have enough GPU resources, we also recommend you enable fine-tuning process on each RL search episode to ensure that the GNN-RL gets a valuable reward.
+
+
+To search the strategy on VGG-16 with channel pruning on convolutional layers and fine-grained pruning on dense layers, and prunes 80% FLOPs reduction on convolutional layers, by running:
    ```
-python -W ignore gnnrl_network_pruning.py --lr_c 0.01 --lr_a 0.005 --dataset cifar10 --bsize 32 --model resnet110 --compression_ratio 0.5 --warmup 30 --pruning_method cp --val_size 1000 --train_episode 200 --data_root ./data --log_dir [your log dir]
+python -W ignore gnnrl_network_pruning.py --dataset imagenet --model vgg16 --compression_ratio 0.8 --log_dir ./logs --data_root [your dataset dir] 
    ```
+To search the strategy on MobileNet-V1 with channel pruning on convolutional layers and fine-grained pruning on dense layers, and prunes 25% FLOPs reduction on convolutional layers, by running:
+   ```
+python -W ignore gnnrl_network_pruning.py --dataset imagenet --model mobilenet --compression_ratio 0.25 --val_size 5000  --log_dir ./logs --data_root [your imagenet dataset dir]
+   ```
+
+### Pruning tools
+We apply the PyTorch built-in [pruning tools](https://pytorch.org/tutorials/intermediate/pruning_tutorial.html#extending-torch-nn-utils-prune-with-custom-pruning-functions)
+`torch.nn.utils.prune` to prune a given DNN. 
+This package prunes a neural network by mask those pruned weights, and it does [not accelerate the
+inference](https://github.com/pytorch/pytorch/issues/36214).
+If you want to accelerate the inference or save memory, please discard those weights with zero-masks. 
+
+We also provide functions for you to extract these weights:
+
+```
+python gnnrl_real_pruning.py --dataset ILSVRC --model vgg16 --pruning_method cp --real_compressed True --data_root data/datasets --model_root ./logs/vgg16.pkl
+```
 
 ### Fine-tuning
 To fine-tune the pruned 50%FLOPs ResNet-110, by running:
@@ -41,14 +78,6 @@ python -W ignore gnnrl_fine_tune.py \
     --ckpt_path=[pruned model checkpoint path] \
     --finetuning
 ```
-### ImageNet
-To evaluate the GNN-RL on the ImageNet dataset, you need to first download the dataset from [ImageNet](http://www.image-net.org/download-images) (ILSVRC-2012) and export the data.
-
-To search the strategy on VGG-16 with channel pruning on convolutional layers, by running:
-
-   ```
-python gnnrl_network_pruning.py --dataset ImageNet --model vgg16 --compression_ratio 0.8 --data_root [your dataset dir] --output [your logs dir]
-   ```
 
 ## Evaluate the compressed Model
 After searching, we can evaluate the compressed Model, which is saved on the default directory ```./logs```.
@@ -67,8 +96,10 @@ python -W ignore gnnrl_fine_tune.py \
    ```
 
 ## Results after fine-tuning
-| Models                   | Compressed ratio | Top1 Acc (%) |
-| ------------------------ | ------------     | ------------ |
-| ResNet-110                | 50% FLOPs        | **94.31**         |
-| ResNet-56                | 50% FLOPs        | **93.49**   |
-| ResNet-44                | 50% FLLOPs       | **93.23**   |
+| Models                   | Compressed ratio | Top1 Acc (%) | Dataset |
+| ------------------------ | ------------     | ------------ |------------|
+| ResNet-110                | 50% FLOPs        | **94.31**   |CIFAR-10|
+| ResNet-56                | 50% FLOPs        | **93.49**   |CIFAR-10|
+| ResNet-44                | 50% FLOPs       | **93.23**   |CIFAR-10|
+| MobileNet-v1                | 40% FLOPs       | **69.5**   |ImageNet|
+| VGG-16                | 20% FLOPs       | **70.35**   |ImageNet|

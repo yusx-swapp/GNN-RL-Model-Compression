@@ -56,7 +56,7 @@ If you want to accelerate the inference or save memory, please discard those wei
 We also provide functions for you to extract these weights:
 
 ```
-python gnnrl_real_pruning.py --dataset ILSVRC --model vgg16 --pruning_method cp --real_compressed True --data_root data/datasets --model_root ./logs/vgg16.pkl
+python gnnrl_real_pruning.py --dataset imagenet --model vgg16 --data_root ../code/data/datasets --ckpt_path data/pretrained_models
 ```
 
 ### Fine-tuning

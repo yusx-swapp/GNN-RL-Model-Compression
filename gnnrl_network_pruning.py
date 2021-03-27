@@ -23,7 +23,7 @@ def parse_args():
 
     # datasets and model
     parser.add_argument('--model', default='mobilenet', type=str, help='model to prune')
-    parser.add_argument('--dataset', default='ILSVRC', type=str, help='dataset to use (cifar/ILSVRC)')
+    parser.add_argument('--dataset', default='imagenet', type=str, help='dataset to use (cifar/imagenet)')
     parser.add_argument('--data_root', default='data', type=str, help='dataset path')
     # parser.add_argument('--preserve_ratio', default=0.5, type=float, help='preserve ratio of the model')
     parser.add_argument('--lbound', default=0.2, type=float, help='minimum preserve ratio')
@@ -326,7 +326,7 @@ if __name__ == "__main__":
     if args.dataset == "imagenet":
         path = args.data_root
 
-        train_loader, val_loader, n_class = get_split_valset_ImageNet("imagenet", args.data_bsize, 4, args.train_size, args.val_size,
+        train_loader, val_loader, n_class = get_split_valset_ImageNet("imagenet", args.data_bsize, args.n_worker, args.train_size, args.val_size,
                                                                       data_root=path,
                                                                       use_real_val=True, shuffle=True)
         input_x = torch.randn([1,3,224,224]).to(device)
@@ -334,7 +334,7 @@ if __name__ == "__main__":
     elif args.dataset == "cifar10":
         path = os.path.join(args.data_root, "datasets")
 
-        train_loader, val_loader, n_class = get_split_train_valset_CIFAR(args.dataset, args.data_bsize, 4, args.train_size, args.val_size,
+        train_loader, val_loader, n_class = get_split_train_valset_CIFAR(args.dataset, args.data_bsize, args.n_worker, args.train_size, args.val_size,
                                                                          data_root=path, use_real_val=False,
                                                                          shuffle=True)
         input_x = torch.randn([1,3,32,32]).to(device)
@@ -354,5 +354,4 @@ if __name__ == "__main__":
 
 #python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet110 --compression_ratio 0.4 --log_dir ./logs
 #python -W ignore gnnrl_network_pruning.py --lr_c 0.01 --lr_a 0.01 --dataset cifar100 --bsize 32 --model shufflenetv2 --compression_ratio 0.2 --warmup 100 --pruning_method cp --val_size 1000 --train_episode 300 --log_dir ./logs
-#python -W ignore gnnrl_network_pruning.py --disable graph_encoder --lr_c 0.01 --lr_a 0.01 --dataset cifar10 --bsize 32 --model resnet56 --compression_ratio 0.5 --warmup 1 --pruning_method cp --val_size 1000 --train_episode 200 --log_dir ./logs3
 #python -W ignore gnnrl_network_pruning.py --dataset imagenet --model mobilenet --compression_ratio 0.25 --val_size 5000  --log_dir ./logs --data_root ../code/data/datasets

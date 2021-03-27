@@ -323,10 +323,10 @@ if __name__ == "__main__":
 
     n_layer,layer_share = get_num_hidden_layer(net,args)
 
-    if args.dataset == "ILSVRC":
+    if args.dataset == "imagenet":
         path = args.data_root
 
-        train_loader, val_loader, n_class = get_split_valset_ImageNet("ILSVRC", args.data_bsize, 4, args.train_size, args.val_size,
+        train_loader, val_loader, n_class = get_split_valset_ImageNet("imagenet", args.data_bsize, 4, args.train_size, args.val_size,
                                                                       data_root=path,
                                                                       use_real_val=True, shuffle=True)
         input_x = torch.randn([1,3,224,224]).to(device)
@@ -355,4 +355,4 @@ if __name__ == "__main__":
 #python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet110 --compression_ratio 0.4 --log_dir ./logs
 #python -W ignore gnnrl_network_pruning.py --lr_c 0.01 --lr_a 0.01 --dataset cifar100 --bsize 32 --model shufflenetv2 --compression_ratio 0.2 --warmup 100 --pruning_method cp --val_size 1000 --train_episode 300 --log_dir ./logs
 #python -W ignore gnnrl_network_pruning.py --disable graph_encoder --lr_c 0.01 --lr_a 0.01 --dataset cifar10 --bsize 32 --model resnet56 --compression_ratio 0.5 --warmup 1 --pruning_method cp --val_size 1000 --train_episode 200 --log_dir ./logs3
-#python -W ignore gnnrl_network_pruning.py --lr_c 0.01 --lr_a 0.01 --dataset ILSVRC --bsize 32 --model mobilenet --compression_ratio 0.25 --warmup 100 --pruning_method cp --val_size 1000 --train_episode 300 --log_dir ./logs --data_root ../code/data/datasets
+#python -W ignore gnnrl_network_pruning.py --dataset imagenet --model mobilenet --compression_ratio 0.25 --val_size 5000  --log_dir ./logs --data_root ../code/data/datasets

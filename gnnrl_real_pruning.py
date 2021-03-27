@@ -24,7 +24,7 @@ def parse_args():
     parser.add_argument('--device', default='cuda', type=str, help='cuda/cpu')
     parser.add_argument('--dataset', default='imagenet', type=str, help='dataset to use (cifar/imagenet)')
     parser.add_argument('--data_root', default='data', type=str, help='dataset path')
-    parser.add_argument('--n_worker', default=16, type=int, help='number of data loader worker')
+    parser.add_argument('--n_worker', default=8, type=int, help='number of data loader worker')
     parser.add_argument('--data_bsize', default=50, type=int, help='number of data batch size')
 
 

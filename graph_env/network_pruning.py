@@ -96,19 +96,19 @@ def l1_unstructured_pruning(net,a_list):
             i+=1
 
     return newnet
-def network_pruning(net,a_list,args):
+def network_pruning(net,a_list):
     if not isinstance(net, nn.Module):
         print('Invalid input. Must be nn.Module')
         return
-
-    if args.pruning_method == "cp":
-        candidate_net = channel_pruning(net,a_list)
-    elif args.pruning_method == "fg":
-        candidate_net = unstructured_pruning(net, a_list)
-    elif args.pruning_method == "cpfg":
-        candidate_net = pruning_cp_fg(net, a_list)
-    else:
-        raise KeyError
+    candidate_net = channel_pruning(net,a_list)
+    # if args.pruning_method == "cp":
+    #     candidate_net = channel_pruning(net,a_list)
+    # elif args.pruning_method == "fg":
+    #     candidate_net = unstructured_pruning(net, a_list)
+    # elif args.pruning_method == "cpfg":
+    #     candidate_net = pruning_cp_fg(net, a_list)
+    # else:
+    #     raise KeyError
     return candidate_net
 
 def real_pruning(args,net):
@@ -227,7 +227,7 @@ def real_pruning(args,net):
                 module.bias.data = nn.Parameter(torch.zeros([new_weights.shape[0]])).to(device)
                 #print(module.weight.data.shape)
                 out_c = module.weight.data.shape[0]
-        net.module.classifier= nn.Sequential(
+        net.classifier= nn.Sequential(
             nn.Linear(in_features=out_c*7*7, out_features=4096, bias=True),
             nn.ReLU(inplace=True),
             nn.Dropout(p=0.5, inplace=False),

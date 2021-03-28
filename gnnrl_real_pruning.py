@@ -8,7 +8,6 @@ from torchvision import models
 from graph_env.feedback_calculation import top5validate
 from graph_env.network_pruning import real_pruning, channel_pruning
 from utils.split_dataset import get_dataset
-import torch.backends.cudnn as cudnn
 
 
 

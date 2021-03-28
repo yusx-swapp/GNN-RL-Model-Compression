@@ -26,10 +26,10 @@ class Memory:
         del self.is_terminals[:]
 class ActorNetwork(nn.Module):
     def __init__(self,g_in_size, g_hidden_size, g_embedding_size,hidden_size, nb_actions,
-                  chkpt_dir='tmp/ppo'):
+                  chkpt_dir='tmp/rl'):
         super(ActorNetwork, self).__init__()
 
-        self.checkpoint_file = os.path.join(chkpt_dir, 'actor_torch_ppo')
+        self.checkpoint_file = os.path.join(chkpt_dir, 'actor_torch_rl')
         self.graph_encoder = multi_stage_graph_encoder(g_in_size, g_hidden_size, g_embedding_size)
         self.linear1 = nn.Linear(g_embedding_size,hidden_size)
         self.linear2 = nn.Linear(hidden_size,nb_actions)
@@ -54,10 +54,10 @@ class ActorNetwork(nn.Module):
 
 class CriticNetwork(nn.Module):
     def __init__(self, g_in_size, g_hidden_size, g_embedding_size,
-                  chkpt_dir='tmp/ppo'):
+                  chkpt_dir='tmp/rl'):
         super(CriticNetwork, self).__init__()
 
-        self.checkpoint_file = os.path.join(chkpt_dir, 'critic_torch_ppo')
+        self.checkpoint_file = os.path.join(chkpt_dir, 'critic_torch_rl')
         self.graph_encoder_critic = multi_stage_graph_encoder(g_in_size, g_hidden_size, g_embedding_size)
         self.linear1 = nn.Linear(g_embedding_size, 1)
         self.tanh = nn.Tanh()

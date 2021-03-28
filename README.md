@@ -32,7 +32,7 @@ Since the validation accuracy on the ImageNet dataset is sensitive to the compre
 with high compression ratios, the accuracy drops considerably without fine-tuning 
 (in some cases, the pruned model without fine-tuning has less than 1% validation accuracy).
 We highly recommend that you decompose the pruning into several stages. 
-For instance, to obtain a 49% FLOPs model, prune the target DNN two times, each with 70% FLOPs constraint~(i.e., 70% FLOPs times 70% FLOPs = 49% FLOPs).
+For instance, to obtain a 49% FLOPs model, prune the target DNN two times, each with 70% FLOPs constraint (i.e., 70% FLOPs * 70% FLOPs = 49% FLOPs).
 
 If you have enough GPU resources, we also recommend you enable fine-tuning process on each RL search episode to ensure that the GNN-RL gets a valuable reward.
 
@@ -103,4 +103,4 @@ python -W ignore gnnrl_fine_tune.py \
 | ResNet-56                | 50% FLOPs        | **93.49**   |CIFAR-10|
 | ResNet-44                | 50% FLOPs       | **93.23**   |CIFAR-10|
 | MobileNet-v1                | 40% FLOPs       | **69.5**   |ImageNet|
-| VGG-16                | 20% FLOPs       | **70.35**   |ImageNet|
+| VGG-16                | 20% FLOPs       | **70.992**   |ImageNet|

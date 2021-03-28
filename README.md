@@ -53,10 +53,10 @@ This package prunes a neural network by mask those pruned weights, and it does [
 inference](https://github.com/pytorch/pytorch/issues/36214).
 If you want to accelerate the inference or save memory, please discard those weights with zero-masks. 
 
-We also provide functions for you to extract these weights:
+We also provide functions for you to extract these weights. For example, the VGG-16, you can extract weights and evaluate it by run:
 
 ```
-python gnnrl_real_pruning.py --dataset imagenet --model vgg16 --data_root ../code/data/datasets --ckpt_path data/pretrained_models
+python gnnrl_real_pruning.py --dataset imagenet --model vgg16 --data_root [your imagenet data dir] --ckpt_path data/pretrained_models
 ```
 
 ### Fine-tuning
@@ -81,10 +81,11 @@ python -W ignore gnnrl_fine_tune.py \
 
 ## Evaluate the compressed Model
 After searching, we can evaluate the compressed Model, which is saved on the default directory ```./logs```.
-For example, if we want to evaluate the performance of compressed Models py running:
-   ```
+We also provide the pruned and fine-tuned model in the ``` data/pretrained_models``` for you to evaluate them.
+If we want to evaluate the performance of compressed Models py running:
+```angular2html
 python -W ignore gnnrl_fine_tune.py \
-    --model=resnet110 \
+    --model=[model name] \
     --dataset=cifar10 \
     --n_gpu=4 \
     --batch_size=256 \

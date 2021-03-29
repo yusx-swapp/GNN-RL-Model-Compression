@@ -8,13 +8,12 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-from tensorboardX import SummaryWriter
 from torch.optim import Adam
 from torchvision import models
 
 from data import resnet
 from utils.train_utils import accuracy, AverageMeter, progress_bar, get_output_folder
-from graph_env.network_pruning import channel_pruning_mobilenet, channel_pruning
+from graph_env.network_pruning import  channel_pruning
 from utils.split_dataset import get_dataset
 def weights_init(m):
     if isinstance(m, nn.Conv2d):
@@ -127,15 +126,15 @@ def get_model():
 
     print('=> Building model..')
     if args.model == 'mobilenet':
-        from data.mobilenet import mobilenet
-        net = mobilenet()
+        from data.mobilenet import MobileNet
+        net = MobileNet(n_class=1000)
         if args.finetuning:
             print("Fine-Tuning...")
             net = channel_pruning(net, torch.ones(100, 1))
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from
             print('=> Resuming from checkpoint..')
             path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
-
+            path = args.ckpt_path
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
             net.load_state_dict(sd)
@@ -324,9 +323,9 @@ def train(epoch, train_loader):
 
         progress_bar(batch_idx, len(train_loader), 'Loss: {:.3f} | Acc1: {:.3f}% | Acc5: {:.3f}%'
                      .format(losses.avg, top1.avg, top5.avg))
-    writer.add_scalar('loss/train', losses.avg, epoch)
-    writer.add_scalar('acc/train_top1', top1.avg, epoch)
-    writer.add_scalar('acc/train_top5', top5.avg, epoch)
+    # writer.add_scalar('loss/train', losses.avg, epoch)
+    # writer.add_scalar('acc/train_top1', top1.avg, epoch)
+    # writer.add_scalar('acc/train_top5', top5.avg, epoch)
 
 
 def test(epoch, test_loader, save=True):
@@ -359,9 +358,9 @@ def test(epoch, test_loader, save=True):
                          .format(losses.avg, top1.avg, top5.avg))
 
     if save:
-        writer.add_scalar('loss/test', losses.avg, epoch)
-        writer.add_scalar('acc/test_top1', top1.avg, epoch)
-        writer.add_scalar('acc/test_top5', top5.avg, epoch)
+        # writer.add_scalar('loss/test', losses.avg, epoch)
+        # writer.add_scalar('acc/test_top1', top1.avg, epoch)
+        # writer.add_scalar('acc/test_top5', top5.avg, epoch)
 
         is_best = False
         if top1.avg > best_acc:
@@ -420,8 +419,6 @@ if __name__ == '__main__':
         torch.cuda.manual_seed(args.seed)
 
     print('=> Preparing data..')
-    if args.dataset =='cifar100':
-        args.dataset = 'imagenet'
     train_loader, val_loader, n_class = get_dataset(args.dataset, args.batch_size, args.n_worker,
                                                     data_root=args.data_root)
 
@@ -445,31 +442,32 @@ if __name__ == '__main__':
         log_dir = get_output_folder('./logs', '{}_{}_finetune'.format(args.model, args.dataset))
         print('=> Saving logs to {}'.format(log_dir))
         # tf writer
-        writer = SummaryWriter(logdir=log_dir)
+        # writer = SummaryWriter(logdir=log_dir)
 
         for epoch in range(start_epoch, start_epoch + args.n_epoch):
             lr = adjust_learning_rate(optimizer, epoch)
             train(epoch, train_loader)
             test(epoch, val_loader)
 
-        writer.close()
+        # writer.close()
         print('=>  best top-1 acc: {}%'.format( best_acc))
 
 '''
 python -W ignore gnnrl_fine_tune.py \
-    --model=shufflenet \
-    --dataset=cifar100 \
+    --model=mobilenet \
+    --dataset=imagenet\
     --lr=0.005 \
     --n_gpu=1 \
-    --batch_size=256 \
+    --batch_size=512 \
     --n_worker=32 \
     --lr_type=cos \
     --n_epoch=200 \
     --wd=4e-5 \
     --seed=2018 \
-    --data_root=data/datasets \
-    --ckpt_path=logs \
+    --data_root=../code/data/datasets \
+    --ckpt_path=logs/mobilenetckpt.best.pth.tar \
     --finetuning 
+        
         --eval
 
     

@@ -59,6 +59,7 @@ We also provide functions for you to extract these weights. For example, the VGG
 python gnnrl_real_pruning.py --dataset imagenet --model vgg16 --data_root [your imagenet data dir] --ckpt_path data/pretrained_models
 ```
 
+before you run the above command, please download the pre-trained weights from [google drive](https://drive.google.com/drive/folders/18EiDRI-tcmrmAzo4Yk2W6G-A8aT2FjSD?usp=sharing), and move them to ``` data/pretrained_models```. 
 ### Fine-tuning
 To fine-tune the pruned 50%FLOPs ResNet-110, by running:
 
@@ -81,7 +82,7 @@ python -W ignore gnnrl_fine_tune.py \
 
 ## Evaluate the compressed Model
 After searching, we can evaluate the compressed Model, which is saved on the default directory ```./logs```.
-We also provide the pruned and fine-tuned model in the ``` data/pretrained_models``` for you to evaluate them.
+We also provide the pruned and fine-tuned model in the [google drive](https://drive.google.com/drive/folders/18EiDRI-tcmrmAzo4Yk2W6G-A8aT2FjSD?usp=sharing) for you to evaluate them. You can download and move them to ``` data/pretrained_models```.
 If we want to evaluate the performance of compressed Models py running:
 ```angular2html
 python -W ignore gnnrl_fine_tune.py \

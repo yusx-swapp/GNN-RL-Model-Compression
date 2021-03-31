@@ -11,7 +11,7 @@ from utils.batchwise_graphs import get_next_graph_batch
 logging.disable(30)
 
 def net_info(model_name):
-    if 'resnet' in model_name:
+    if model_name in ['resnet110','resnet56','resnet44','resnet32','resnet20']:
         n_layer = 3
         n_blocks = 9
         in_channels = [3]
@@ -60,7 +60,6 @@ def net_info(model_name):
 
             out_channels.extend(channels[i]*n_blocks*2)
         return in_channels,out_channels,n_blocks
-
     elif model_name == 'mobilenetv2':
         in_channels = []
         out_channels=[]
@@ -129,13 +128,23 @@ def net_info(model_name):
                 else:
                     depth_wise.append(False)
         return in_channels,out_channels,depth_wise
-
     elif model_name == 'vgg16':
         in_channels = []
         out_channels=[]
 
         from torchvision.models import vgg16
         net = vgg16()
+        for name,layer in net.named_modules():
+            if isinstance(layer,nn.Conv2d):
+                in_channels.append(layer.in_channels)
+                out_channels.append(layer.out_channels)
+        return in_channels,out_channels,[]
+    elif model_name == 'resnet18':
+        in_channels = []
+        out_channels=[]
+
+        from torchvision.models import resnet18
+        net = resnet18()
         for name,layer in net.named_modules():
             if isinstance(layer,nn.Conv2d):
                 in_channels.append(layer.in_channels)
@@ -202,12 +211,21 @@ def conv_motif(n_in_chanel,node_cur = 0):
 
         return np.array(edge_list)
 
-def level1_graph(in_channel,feature_size,net_name='resnet',device=None):
+def level1_graph(in_channel,feature_size,net_name='resnet110',device=None):
     if device == None:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     level_1_graphs = []
-    if 'resnet' in net_name:
+    if net_name in ['resnet110','resnet56','resnet44','resnet32','resnet20']:
+        for in_c in in_channel:
+            # conv 3*3 with 3 in channel
+            edge_index = conv_motif(in_c)
+
+            G = Data(edge_index=torch.tensor(edge_index).long().t().contiguous())
+            G.x = torch.randn([G.num_nodes,feature_size]).to(device)
+            level_1_graphs.append(G.to(device))
+
+    elif net_name == 'resnet18':
         for in_c in in_channel:
             # conv 3*3 with 3 in channel
             edge_index = conv_motif(in_c)
@@ -219,7 +237,6 @@ def level1_graph(in_channel,feature_size,net_name='resnet',device=None):
     elif net_name == 'mobilenet':
         _, __ ,depth_wise = net_info(net_name)
         for i,in_c in enumerate(in_channel):
-            # conv 3*3 with 3 in channel
             if depth_wise[i]:
                 edge_index,_ = depth_sub_graph(in_c)
             else:
@@ -232,7 +249,6 @@ def level1_graph(in_channel,feature_size,net_name='resnet',device=None):
     elif net_name == 'mobilenetv2':
         _, __ ,depth_wise = net_info(net_name)
         for i,in_c in enumerate(in_channel):
-            # conv 3*3 with 3 in channel
             if depth_wise[i]:
                 edge_index,_ = depth_sub_graph(in_c)
             else:
@@ -243,7 +259,6 @@ def level1_graph(in_channel,feature_size,net_name='resnet',device=None):
             level_1_graphs.append(G.to(device))
     elif net_name == 'vgg16':
         for in_c in in_channel:
-        # conv 3*3 with 3 in channel
             edge_index = conv_motif(in_c)
 
             G = Data(edge_index=torch.tensor(edge_index).long().t().contiguous())
@@ -315,7 +330,7 @@ def level2_graph(type_dict,out_channels,net_name,n_features=20,device=None):
                 edge_type.append(type_dict['ReLu'])
                 node_cur += 1
         Graph = Data(edge_index=torch.tensor(edge_list).t().contiguous(),edge_type =edge_type)
-    elif 'resnet' in net_name:
+    elif net_name in ['resnet110','resnet56','resnet44','resnet32','resnet20']:
         # in_channels,out_channels,blocks = net_info(net_name)
         _,_,blocks = net_info(net_name)
 
@@ -405,6 +420,20 @@ def level2_graph(type_dict,out_channels,net_name,n_features=20,device=None):
         edge_type.append(type_dict['linear'])
         # Graph = Data(edge_index=torch.tensor(edge_list).t().contiguous(),edge_type =edge_type)
         Graph = Data(edge_index=torch.tensor(edge_list).t().contiguous(),edge_type =edge_type)
+    elif net_name == 'resnet18':
+        in_channels,out_channels,_ = net_info(net_name)
+
+        for i in range(len(out_channels)):
+
+            edge_list,edge_type,node_cur = conv_sub_graph(node_cur,out_channels[i],edge_list,edge_type,i,type_dict['concatenates'])
+            k+=1
+            #Batch Norm
+            edge_list.append([node_cur,node_cur+1])
+            edge_type.append(type_dict['ReLu'])
+            node_cur += 1
+        Graph = Data(edge_index=torch.tensor(edge_list).t().contiguous(),edge_type =edge_type)
+
+
 
     Graph.x = torch.randn([Graph.num_nodes, n_features])
     Graph.edge_features = None
@@ -433,3 +462,7 @@ def hierarchical_graph_construction(in_channels,out_channels,net_name,n_features
     return hierarchical_graph
 
 
+if __name__ == '__main__':
+    from torchvision import models
+    net = models.resnet18()
+    print(net)

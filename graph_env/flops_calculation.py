@@ -23,7 +23,7 @@ def layer_flops(layer, input_x):
 def preserve_flops(Flops,preserve_ratio,model_name,a):
     actions = np.clip(1-a, 0.1, 1)
     flops = deepcopy(Flops)
-    if 'resnet' in model_name:
+    if model_name in ['resnet110','resnet56','resnet44','resnet32','resnet20']:
         flops = flops * np.array(preserve_ratio).reshape(-1)
         for i in range(1, len(flops)):
             flops[i] *= preserve_ratio[i - 1]
@@ -35,6 +35,11 @@ def preserve_flops(Flops,preserve_ratio,model_name,a):
         flops[1::2] = flops[1::2] * (np.array(actions[:-1]).reshape(-1))
         flops[1::2] = flops[1::2] * (np.array(actions[:-1]).reshape(-1))
 
+    elif model_name == 'resnet18':
+        flops = flops * np.array(preserve_ratio).reshape(-1)
+        for i in range(1, len(flops)):
+            flops[i] *= preserve_ratio[i - 1]
+
     else:
         raise NotImplementedError
     return flops
@@ -42,7 +47,7 @@ def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
     # TODO layer flops
 
     flops = []
-    if 'resnet' in model_name:
+    if model_name in ['resnet110','resnet56','resnet44','resnet32','resnet20']:
         module = net.module.conv1
         flop, input_x = layer_flops(module, input_x)
         flops.append(flop)
@@ -93,7 +98,6 @@ def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
             flops[1::2] = flops[1::2] * np.array(preserve_ratio[:-1]).reshape(-1)
 
         flops_share = list(flops[::2])
-
     elif model_name == 'vgg16':
         for name, module in net.named_modules():
             if isinstance(module, nn.Conv2d):
@@ -106,7 +110,15 @@ def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
 
         #Here in VGG-16 we dont need to share the pruning index
         flops_share = flops
-
+    elif model_name == 'resnet18':
+        for name, module in net.named_modules():
+            if isinstance(module, nn.Conv2d):
+                flop, input_x = layer_flops(module, input_x)
+                flops.append(flop)
+        if preserve_ratio is not None:
+            flops = flops * np.array(preserve_ratio).reshape(-1)
+            for i in range(1, len(flops)):
+                flops[i] *= preserve_ratio[i - 1]
     else:
         raise NotImplementedError
 

@@ -211,6 +211,10 @@ def load_model(model_name,data_root,device=None):
         checkpoint = torch.load(path, map_location=device)
         net.load_state_dict(checkpoint['state_dict'])
 
+    elif model_name =='resnet18':
+        net = models.resnet18(pretrained=True)
+        net = torch.nn.DataParallel(net)
+
     elif model_name == "vgg16":
         net = models.vgg16(pretrained=True).eval()
         net = torch.nn.DataParallel(net)
@@ -261,14 +265,6 @@ def load_model(model_name,data_root,device=None):
         raise KeyError
     return net
 
-def get_prunable_idx(net,args):
-    index = []
-    if args.model == 'resnet56':
-        for i, module in enumerate(net.modules()):
-            #for name, module in net.named_modules():
-            if isinstance(module, nn.Conv2d):
-                index.append(i)
-
 
 def get_num_hidden_layer(net,args):
     layer_share=0
@@ -294,7 +290,13 @@ def get_num_hidden_layer(net,args):
                 else:
                     n_layer +=1
 
-    elif "resnet" in args.model:
+    elif args.model == 'resnet18':
+        for name, module in net.named_modules():
+            if isinstance(module, nn.Conv2d):
+                n_layer +=1
+                layer_share+=1
+
+    elif args.model in ['resnet110','resnet56','resnet44','resnet32','resnet20']:
 
         layer_share+=len(list(net.module.layer1.named_children()))
         layer_share+=len(list(net.module.layer2.named_children()))

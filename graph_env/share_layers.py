@@ -4,7 +4,7 @@ import torch.nn as nn
 
 def share_layer_index(net,a_list,model_name):
     a_share = []
-    if 'resnet' in model_name:
+    if model_name in ['resnet110','resnet56','resnet44','resnet32','resnet20']:
         #share the pruning index where layers are connected by residual connection
 
         a_share.append(a_list[0])
@@ -43,6 +43,8 @@ def share_layer_index(net,a_list,model_name):
 
     elif model_name == 'vgg16':
         #Here in VGG-16 we dont need to share the pruning index
+        a_share = a_list
+    elif model_name == 'resnet18':
         a_share = a_list
     else:
         a_share = a_list

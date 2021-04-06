@@ -113,12 +113,15 @@ def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
     elif model_name == 'resnet18':
         for name, module in net.named_modules():
             if isinstance(module, nn.Conv2d):
+                input_x = torch.randn(input_x.shape[0],module.in_channels,input_x.shape[2],input_x.shape[3]).cuda()
                 flop, input_x = layer_flops(module, input_x)
                 flops.append(flop)
         if preserve_ratio is not None:
             flops = flops * np.array(preserve_ratio).reshape(-1)
             for i in range(1, len(flops)):
                 flops[i] *= preserve_ratio[i - 1]
+        flops_share = flops
+
     else:
         raise NotImplementedError
 

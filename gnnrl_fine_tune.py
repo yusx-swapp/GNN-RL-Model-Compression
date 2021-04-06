@@ -7,6 +7,7 @@ import math
 import torch
 import torch.nn as nn
 import numpy as np
+from torch import optim
 
 from torch.optim import Adam
 from torchvision import models
@@ -133,7 +134,7 @@ def get_model():
             net = channel_pruning(net, torch.ones(100, 1))
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from
             print('=> Resuming from checkpoint..')
-            path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
+            # path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
             path = args.ckpt_path
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
@@ -176,6 +177,20 @@ def get_model():
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from
             print('=> Resuming from checkpoint..')
             path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
+            # checkpoint = torch.load(args.ckpt_path, args.model+'ckpt.best.pth.tar')
+            checkpoint = torch.load(path)
+            sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
+            net.load_state_dict(sd)
+        if use_cuda and args.n_gpu > 1:
+            net = torch.nn.DataParallel(net)
+
+    elif args.model == 'resnet18':
+        net = models.resnet18(pretrained=True)
+        net = channel_pruning(net,torch.ones(100, 1))
+        if args.ckpt_path is not None:  # assigned checkpoint path to resume from
+            print('=> Resuming from checkpoint..')
+            path = args.ckpt_path
+            # path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
             # checkpoint = torch.load(args.ckpt_path, args.model+'ckpt.best.pth.tar')
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
@@ -431,8 +446,8 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss()
     print('Using Adam...')
     print('weight decay  = {}'.format(args.wd))
-    #optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=args.wd)
-    optimizer = Adam(net.parameters(), lr=args.lr,weight_decay=args.wd)
+    optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=args.wd)
+    # optimizer = Adam(net.parameters(), lr=args.lr,weight_decay=args.wd)
     if args.eval:  # just run eval
         print('=> Start evaluation...')
         test(0, val_loader, save=False)

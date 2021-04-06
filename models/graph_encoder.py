@@ -21,7 +21,7 @@ class stage2_gcn_encoder(nn.Module):
 
         self.linear1 = nn.Linear(hidden_feature,out_feature)
 
-        self.tanh = F.relu
+        self.tanh = F.tanh
         self.dropout = F.dropout
 
         self.pool = global_mean_pool
@@ -54,7 +54,7 @@ class stage1_gcn_encoder(nn.Module):
 
         self.conv1 = GCNConv(in_feature, hidden_feature)
         self.linear1 = nn.Linear(hidden_feature,out_feature)
-        self.tanh = F.relu
+        self.tanh = F.tanh
         self.dropout = F.dropout
 
         self.pool = global_mean_pool

@@ -83,6 +83,7 @@ def parse_args():
     return parser.parse_args()
 
 def search(env):
+
     ############## Hyperparameters ##############
     env_name = "gnnrl_search"
     render = False
@@ -357,3 +358,4 @@ if __name__ == "__main__":
 #python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet110 --compression_ratio 0.4 --log_dir ./logs
 #python -W ignore gnnrl_network_pruning.py --lr_c 0.01 --lr_a 0.01 --dataset cifar100 --bsize 32 --model shufflenetv2 --compression_ratio 0.2 --warmup 100 --pruning_method cp --val_size 1000 --train_episode 300 --log_dir ./logs
 #python -W ignore gnnrl_network_pruning.py --dataset imagenet --model mobilenet --compression_ratio 0.2 --val_size 5000  --log_dir ./logs --data_root ../code/data/datasets
+#python -W ignore gnnrl_network_pruning.py --dataset imagenet --model resnet18 --compression_ratio 0.2 --val_size 5000  --log_dir ./logs --data_root ../code/data/datasets

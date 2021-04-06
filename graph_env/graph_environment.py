@@ -73,7 +73,7 @@ class graph_env:
         rewards = 0
         accuracy = 0
         self.preserve_ratio *= 1 - np.array(share_layer_index(self.model,actions,self.args.model)).astype(float)
-        self.preserve_ratio = np.clip(self.preserve_ratio, 0.1, 1)
+        self.preserve_ratio = np.clip(self.preserve_ratio, 0.1, 0.9)
         #pruning the model
         # self.preserve_ratio[0] = 1
         # self.preserve_ratio[-1] = 1

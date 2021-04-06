@@ -105,3 +105,4 @@ python -W ignore gnnrl_fine_tune.py \
 | ResNet-44                | 50% FLOPs       | **93.23**   |CIFAR-10|
 | MobileNet-v1                | 40% FLOPs       | **69.5**   |ImageNet|
 | VGG-16                | 20% FLOPs       | **70.992**   |ImageNet|
+| ResNet-18                | 75% FLOPs       | **68.22**   |ImageNet|

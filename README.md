@@ -98,14 +98,14 @@ python -W ignore gnnrl_fine_tune.py \
    ```
 
 ## Results on CIFAR-10
-| Models                   | Compressed ratio | Top1 Acc (%) | Dataset |
+| Models                   | Compressed ratio | Top1 Acc. (%) | Dataset |
 | ------------------------ | ------------     | ------------ |------------|
 | ResNet-110                | 50% FLOPs        | **94.31**   |CIFAR-10|
 | ResNet-56                | 50% FLOPs        | **93.49**   |CIFAR-10|
 | ResNet-44                | 50% FLOPs       | **93.23**   |CIFAR-10|
 
 ## Results on ImageNet
-| Models                   | Compressed ratio | Top1 Acc (%) |$\Delta$ | Dataset |
+| Models                   | Compressed ratio | Top1 Acc. (%) |![\delta](http://latex.codecogs.com/svg.latex?{\Delta}) Acc.| Dataset |
 | ------------------------ | ------------     | ------------ |------------|------------|
 | MobileNet-v1                | 40% FLOPs       | **69.5**  |**-1.1**  |ImageNet|
 | VGG-16                | 20% FLOPs       | **70.992**   |**+0.49** |ImageNet|

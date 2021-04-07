@@ -97,12 +97,22 @@ python -W ignore gnnrl_fine_tune.py \
      
    ```
 
-## Results after fine-tuning
+## Results on CIFAR-10
 | Models                   | Compressed ratio | Top1 Acc (%) | Dataset |
 | ------------------------ | ------------     | ------------ |------------|
 | ResNet-110                | 50% FLOPs        | **94.31**   |CIFAR-10|
 | ResNet-56                | 50% FLOPs        | **93.49**   |CIFAR-10|
 | ResNet-44                | 50% FLOPs       | **93.23**   |CIFAR-10|
-| MobileNet-v1                | 40% FLOPs       | **69.5**   |ImageNet|
-| VGG-16                | 20% FLOPs       | **70.992**   |ImageNet|
-| ResNet-18                | 75% FLOPs       | **68.22**   |ImageNet|
+
+## Results on ImageNet
+| Models                   | Compressed ratio | Top1 Acc (%) |$\Delta$ | Dataset |
+| ------------------------ | ------------     | ------------ |------------|------------|
+| MobileNet-v1                | 40% FLOPs       | **69.5**  |**-1.1**  |ImageNet|
+| VGG-16                | 20% FLOPs       | **70.992**   |**+0.49** |ImageNet|
+| ResNet-18                | 75% FLOPs       | **68.55**   |**-1.21** |ImageNet|
+| ResNet-18                | 50% FLOPs       | **67.27**   |**-2.49** |ImageNet|
+
+**Note**: 
+The ResNet-18 is still in the fine-tuning process, and the results are the intermediate results and only fine-tuned with 28 epochs where the baselines are fine-tuned with 150 epochs.
+
+We will continuously update results on ImageNet and add support for other popular networks.

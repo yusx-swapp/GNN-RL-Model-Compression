@@ -444,9 +444,11 @@ if __name__ == '__main__':
 
 
     criterion = nn.CrossEntropyLoss()
-    print('Using Adam...')
+
     print('weight decay  = {}'.format(args.wd))
+    print('Using SGD...')
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=args.wd)
+    # print('Using Adam...')
     # optimizer = Adam(net.parameters(), lr=args.lr,weight_decay=args.wd)
     if args.eval:  # just run eval
         print('=> Start evaluation...')

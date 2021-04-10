@@ -107,12 +107,13 @@ python -W ignore gnnrl_fine_tune.py \
 ## Results on ImageNet
 | Models                   | Compressed ratio | Top1 Acc. (%) |![\delta](http://latex.codecogs.com/svg.latex?{\Delta}) Acc.| Dataset |
 | ------------------------ | ------------     | ------------ |------------|------------|
-| MobileNet-v1                | 40% FLOPs       | **69.5**  |**-1.1**  |ImageNet|
+| MobileNet-v1                | 40% FLOPs       | **69.5**  |**-1.10**  |ImageNet|
+| *MobileNet-v1                | 75% FLOPs       | **68.99**  |**-1.61**  |ImageNet|
 | VGG-16                | 20% FLOPs       | **70.992**   |**+0.49** |ImageNet|
-| ResNet-18                | 75% FLOPs       | **68.60**   |**-1.16** |ImageNet|
-| ResNet-18                | 50% FLOPs       | **67.32**   |**-2.44** |ImageNet|
+| *ResNet-18                | 75% FLOPs       | **68.66**   |**-1.10** |ImageNet|
+| *ResNet-18                | 50% FLOPs       | **67.37**   |**-2.39** |ImageNet|
 
 **Note**: 
-The ResNet-18 is still in the fine-tuning process, and the results are the intermediate results and only fine-tuned with 56 epochs where the baselines are fine-tuned with 150 epochs.
+The DNNs with '*' are still in the fine-tuning process, and the results are the intermediate results and only fine-tuned with less than 150 epochs where the baselines are fine-tuned with 150 epochs.
 
 We will continuously update results on ImageNet and add support for other popular networks.

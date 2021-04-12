@@ -108,7 +108,7 @@ python -W ignore gnnrl_fine_tune.py \
 | Models                   | Compressed ratio | Top1 Acc. (%) |![\delta](http://latex.codecogs.com/svg.latex?{\Delta}) Acc.| Dataset |
 | ------------------------ | ------------     | ------------ |------------|------------|
 | MobileNet-v1                | 40% FLOPs       | **69.5**  |**-1.10**  |ImageNet|
-| *MobileNet-v1                | 75% FLOPs       | **68.99**  |**-1.61**  |ImageNet|
+| *MobileNet-v1                | 75% FLOPs       | **69.03**  |**-1.57**  |ImageNet|
 | VGG-16                | 20% FLOPs       | **70.992**   |**+0.49** |ImageNet|
 | *ResNet-18                | 75% FLOPs       | **68.66**   |**-1.10** |ImageNet|
 | *ResNet-18                | 50% FLOPs       | **67.37**   |**-2.39** |ImageNet|

@@ -44,7 +44,7 @@ def share_layer_index(net,a_list,model_name):
     elif model_name == 'vgg16':
         #Here in VGG-16 we dont need to share the pruning index
         a_share = a_list
-    elif model_name == 'resnet18':
+    elif model_name in ['resnet18','resnet50']:
         a_share = a_list
     else:
         a_share = a_list

@@ -216,6 +216,10 @@ def load_model(model_name,data_root,device=None):
         net = models.resnet18(pretrained=True)
         net = torch.nn.DataParallel(net)
 
+    elif model_name =='resnet50':
+        net = models.resnet50(pretrained=True)
+        net = torch.nn.DataParallel(net)
+
     elif model_name == "vgg16":
         net = models.vgg16(pretrained=True).eval()
         net = torch.nn.DataParallel(net)
@@ -291,7 +295,7 @@ def get_num_hidden_layer(net,args):
                 else:
                     n_layer +=1
 
-    elif args.model == 'resnet18':
+    elif args.model in ['resnet18','resnet50']:
         for name, module in net.named_modules():
             if isinstance(module, nn.Conv2d):
                 n_layer +=1

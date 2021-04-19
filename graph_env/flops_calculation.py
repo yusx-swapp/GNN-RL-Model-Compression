@@ -35,7 +35,7 @@ def preserve_flops(Flops,preserve_ratio,model_name,a):
         flops[1::2] = flops[1::2] * (np.array(actions[:-1]).reshape(-1))
         flops[1::2] = flops[1::2] * (np.array(actions[:-1]).reshape(-1))
 
-    elif model_name == 'resnet18':
+    elif model_name in ['resnet18','resnet50']:
         flops = flops * np.array(preserve_ratio).reshape(-1)
         for i in range(1, len(flops)):
             flops[i] *= preserve_ratio[i - 1]
@@ -110,7 +110,7 @@ def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
 
         #Here in VGG-16 we dont need to share the pruning index
         flops_share = flops
-    elif model_name == 'resnet18':
+    elif model_name in ['resnet18','resnet50']:
         for name, module in net.named_modules():
             if isinstance(module, nn.Conv2d):
                 input_x = torch.randn(input_x.shape[0],module.in_channels,input_x.shape[2],input_x.shape[3]).cuda()

@@ -150,6 +150,18 @@ def net_info(model_name):
                 in_channels.append(layer.in_channels)
                 out_channels.append(layer.out_channels)
         return in_channels,out_channels,[]
+
+    elif model_name == 'resnet50':
+        in_channels = []
+        out_channels=[]
+
+        from torchvision.models import resnet50
+        net = resnet50()
+        for name,layer in net.named_modules():
+            if isinstance(layer,nn.Conv2d):
+                in_channels.append(layer.in_channels)
+                out_channels.append(layer.out_channels)
+        return in_channels,out_channels,[]
 def create_edge_features(edge_types,type_features,device):
     if max(edge_types)> len(type_features):
         #random initial primitive operation like batch norm
@@ -225,7 +237,7 @@ def level1_graph(in_channel,feature_size,net_name='resnet110',device=None):
             G.x = torch.randn([G.num_nodes,feature_size]).to(device)
             level_1_graphs.append(G.to(device))
 
-    elif net_name == 'resnet18':
+    elif net_name in ['resnet18','resnet50']:
         for in_c in in_channel:
             # conv 3*3 with 3 in channel
             edge_index = conv_motif(in_c)
@@ -420,7 +432,7 @@ def level2_graph(type_dict,out_channels,net_name,n_features=20,device=None):
         edge_type.append(type_dict['linear'])
         # Graph = Data(edge_index=torch.tensor(edge_list).t().contiguous(),edge_type =edge_type)
         Graph = Data(edge_index=torch.tensor(edge_list).t().contiguous(),edge_type =edge_type)
-    elif net_name == 'resnet18':
+    elif net_name in ['resnet18','resnet50']:
         in_channels,out_channels,_ = net_info(net_name)
 
         for i in range(len(out_channels)):

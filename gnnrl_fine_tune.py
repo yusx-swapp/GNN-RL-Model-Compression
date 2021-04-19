@@ -198,6 +198,20 @@ def get_model():
         if use_cuda and args.n_gpu > 1:
             net = torch.nn.DataParallel(net)
 
+    elif args.model == 'resnet50':
+        net = models.resnet50(pretrained=True)
+        net = channel_pruning(net,torch.ones(100, 1))
+        if args.ckpt_path is not None:  # assigned checkpoint path to resume from
+            print('=> Resuming from checkpoint..')
+            path = args.ckpt_path
+            # path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
+            # checkpoint = torch.load(args.ckpt_path, args.model+'ckpt.best.pth.tar')
+            checkpoint = torch.load(path)
+            sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
+            net.load_state_dict(sd)
+        if use_cuda and args.n_gpu > 1:
+            net = torch.nn.DataParallel(net)
+
     elif args.model == "resnet56":
         net = resnet.__dict__['resnet56']()
         #net = torch.nn.DataParallel(net,list(range(args.n_gpu)))

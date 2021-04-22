@@ -55,7 +55,7 @@ def parse_args():
     parser.add_argument('--hidden_size', default=300, type=int, help='hidden num of first fully connect layer')
     parser.add_argument('--solved_reward', default=0, type=int, help='stop training if avg_reward > solved_reward')
     parser.add_argument('--log_interval', default=20, type=int, help='print avg reward in the interval')
-    parser.add_argument('--max_episodes', default=10000, type=int, help='max training episodes')
+    parser.add_argument('--max_episodes', default=3000, type=int, help='max training episodes')
     parser.add_argument('--max_timesteps', default=1500, type=int, help='max timesteps in one episode')
     parser.add_argument('--update_timestep', default=100, type=int, help='update policy every n timesteps')
     parser.add_argument('--action_std', default=0.5, type=float, help='constant std for action distribution (Multivariate Normal)')
@@ -224,17 +224,7 @@ def load_model(model_name,data_root,device=None):
         net = models.vgg16(pretrained=True).eval()
         net = torch.nn.DataParallel(net)
     elif model_name == "mobilenetv2":
-        from data.mobilenetv2 import mobilenetv2
-        net = mobilenetv2()
-        print('=> Resuming from checkpoint..')
-        path = os.path.join(data_root, "pretrained_models", 'mobilenetv2.pth.tar')
-        print(path)
-        checkpoint = torch.load(path)
-        sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
-        net.load_state_dict(sd)
-
-
-
+        net = models.mobilenet_v2(pretrained=True)
         net = torch.nn.DataParallel(net)
 
     elif model_name == "mobilenet":

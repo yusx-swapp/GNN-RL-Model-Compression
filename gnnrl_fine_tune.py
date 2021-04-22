@@ -148,8 +148,7 @@ def get_model():
             net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
 
     elif args.model == 'mobilenetv2':
-        from data.mobilenetv2 import mobilenetv2
-        net = mobilenetv2()
+        net = models.mobilenet_v2(pretrained=True)
         if args.finetuning:
             net = channel_pruning(net,torch.ones(100, 1))
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from

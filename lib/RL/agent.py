@@ -1,6 +1,8 @@
 import os
 
 # import gym
+import time
+
 import torch as T,torch
 import torch.nn as nn
 from torch.distributions import MultivariateNormal
@@ -9,7 +11,7 @@ import numpy as np
 from models.graph_encoder import multi_stage_graph_encoder
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
+times=[]
 class Memory:
     def __init__(self):
         self.actions = []
@@ -140,8 +142,9 @@ class Agent:
         self.K_epochs = K_epochs
         
         self.policy = ActorCritic(state_dim, action_dim, action_std).to(device)
-        self.optimizer = torch.optim.Adam(self.policy.parameters(), lr=lr, betas=betas)
-        
+        # self.optimizer = torch.optim.Adam(self.policy.parameters(), lr=lr, betas=betas)
+        self.optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, self.policy.parameters()), lr=lr, betas=betas)
+
         self.policy_old = ActorCritic(state_dim, action_dim, action_std).to(device)
         self.policy_old.load_state_dict(self.policy.state_dict())
         
@@ -171,7 +174,8 @@ class Agent:
         old_states = memory.states
         old_actions = torch.squeeze(torch.stack(memory.actions).to(device), 1).detach()
         old_logprobs = torch.squeeze(torch.stack(memory.logprobs), 1).to(device).detach()
-        
+
+
         # Optimize policy for K epochs:
         for _ in range(self.K_epochs):
             # Evaluating old actions and values :
@@ -186,11 +190,15 @@ class Agent:
             surr2 = torch.clamp(ratios, 1-self.eps_clip, 1+self.eps_clip) * advantages
             loss = -torch.min(surr1, surr2) + 0.5*self.MseLoss(state_values, rewards) - 0.01*dist_entropy
             print('Epoches {} \t loss: {} \t '.format(_, loss.mean()))
+            start = time.time()
             # take gradient step
             self.optimizer.zero_grad()
             loss.mean().backward()
             self.optimizer.step()
-            
+            end = time.time()
+            times.append(end-start)
+        print("time:",times)
+
         # Copy new weights into old policy:
         self.policy_old.load_state_dict(self.policy.state_dict())
         

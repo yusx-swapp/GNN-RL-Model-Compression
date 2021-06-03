@@ -52,7 +52,7 @@ class graph_env:
         self.current_states = None
         #env
         self.done = False
-
+        self.max_timesteps = args.max_timesteps
         _, accuracy,_,_ = reward_caculation(self.args, self.model, self.val_loader, root=self.log_dir)
         print("Initial val. accuracy:",accuracy)
 
@@ -68,12 +68,19 @@ class graph_env:
 
         return self.current_states
 
-    def step(self,actions):
+    def step(self,actions,time_step):
 
         rewards = 0
         accuracy = 0
         self.preserve_ratio *= 1 - np.array(share_layer_index(self.model,actions,self.args.model)).astype(float)
-        self.preserve_ratio = np.clip(self.preserve_ratio, 0.1, 0.9)
+        # self.preserve_ratio *= 1 - np.array(share_layer_index(self.model,actions,self.args.model)).astype(float)
+
+        if self.model_name in ['mobilenet','mobilenetv2']:
+            self.preserve_ratio = np.clip(self.preserve_ratio, 0.9, 1)
+        else:
+            self.preserve_ratio = np.clip(self.preserve_ratio, 0.1, 1)
+        # self.preserve_ratio = np.clip(self.preserve_ratio, 0.1, 0.98)
+
         #pruning the model
         # self.preserve_ratio[0] = 1
         # self.preserve_ratio[-1] = 1
@@ -88,8 +95,12 @@ class graph_env:
             r_flops = 1 - reduced_flops/self.total_flops
             # print("FLOPS ratio:",r_flops)
             self.done = True
-            # self.pruned_model = channel_pruning(self.model,self.preserve_ratio)
-            # rewards, accuracy = reward_caculation(self.args, self.pruned_model, self.val_loader, root=self.log_dir)
+            self.pruned_model = channel_pruning(self.model,self.preserve_ratio)
+            if self.dataset == "cifar10":
+                rewards, accuracy,_,_ = reward_caculation(self.args, self.pruned_model, self.val_loader, root=self.log_dir)
+            else:
+                _,_,rewards, accuracy = reward_caculation(self.args, self.pruned_model, self.val_loader, root=self.log_dir)
+            '''
             if self.dataset == "cifar10":
                 rewards = -100
                 for i in range(10):
@@ -102,6 +113,7 @@ class graph_env:
             else:
                 self.pruned_model = channel_pruning(self.model,self.preserve_ratio)
                 _,_,rewards, accuracy = reward_caculation(self.args, self.pruned_model, self.val_loader, root=self.log_dir)
+            '''
             if accuracy > self.best_accuracy:
                 self.best_accuracy = accuracy
 
@@ -115,7 +127,10 @@ class graph_env:
                 }, True, checkpoint_dir=self.log_dir)
 
                 print("Best Accuracy (without fine-tuning) of Compressed Models: {}. The FLOPs ratio: {}".format( self.best_accuracy,r_flops))
-
+        if time_step == (self.max_timesteps):
+            if not self.done:
+                rewards = -100
+                self.done = True
         graph = self.model_to_graph()
         return graph,rewards,self.done
 

@@ -21,7 +21,7 @@ def share_layer_index(net,a_list,model_name):
             a_share.append(a_list[i])
             a_share.append(a_list[0])
             i+=1
-    elif model_name in ['mobilenetv2','mobilenet']:
+    elif model_name in ['mobilenet']:
         # prune mobilenet block together(share pruning index between depth-wise and point-wise conv)
         i = 0
         for name, module in net.named_modules():
@@ -31,7 +31,7 @@ def share_layer_index(net,a_list,model_name):
                 else:
                     a_share.append(a_list[i])
                     i += 1
-    elif model_name in ['shufflenet','shufflenetv2']:
+    elif model_name in ['mobilenetv2','shufflenet','shufflenetv2']:
         i = 0
         for name, module in net.named_modules():
             if isinstance(module, nn.Conv2d):

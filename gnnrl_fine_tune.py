@@ -145,7 +145,7 @@ def get_model():
                 layer.reset_parameters()
 
         if use_cuda and args.n_gpu > 1:
-            net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
+            net = torch.nn.DataParallel(net)
 
     elif args.model == 'mobilenetv2':
         net = models.mobilenet_v2(pretrained=True)
@@ -153,7 +153,7 @@ def get_model():
             net = channel_pruning(net,torch.ones(100, 1))
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from
             print('=> Resuming from checkpoint..')
-            path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
+            path = args.ckpt_path
             #path = args.ckpt_path
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
@@ -162,7 +162,7 @@ def get_model():
         #     if hasattr(layer, 'reset_parameters'):
         #         layer.reset_parameters()
         if use_cuda and args.n_gpu > 1:
-            net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
+            net = torch.nn.DataParallel(net)
 
     elif args.model == 'mobilenet_0.5flops':
         from data.mobilenet_cifar100 import MobileNet
@@ -175,7 +175,7 @@ def get_model():
         #     net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from
             print('=> Resuming from checkpoint..')
-            path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
+            path = args.ckpt_path
             # checkpoint = torch.load(args.ckpt_path, args.model+'ckpt.best.pth.tar')
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
@@ -217,13 +217,13 @@ def get_model():
         net = channel_pruning(net,torch.ones(100, 1))
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from
             print('=> Resuming from checkpoint..')
-            path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
+            path = os.path.join(args.ckpt_path )
 
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
             net.load_state_dict(sd)
         if use_cuda and args.n_gpu > 1:
-            net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
+            net = torch.nn.DataParallel(net)
 
     elif args.model == "resnet44":
         net = resnet.__dict__['resnet44']()
@@ -231,13 +231,13 @@ def get_model():
         net = channel_pruning(net,torch.ones(100, 1))
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from
             print('=> Resuming from checkpoint..')
-            path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
+            path = args.ckpt_path
 
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
             net.load_state_dict(sd)
         if use_cuda and args.n_gpu > 1:
-            net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
+            net = torch.nn.DataParallel(net)
 
     elif args.model == "resnet110":
         net = resnet.__dict__['resnet110']()
@@ -245,13 +245,12 @@ def get_model():
         net = channel_pruning(net,torch.ones(120, 1))
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from
             print('=> Resuming from checkpoint..')
-            path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
-
+            path = args.ckpt_path
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
             net.load_state_dict(sd)
         if use_cuda and args.n_gpu > 1:
-            net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
+            net = torch.nn.DataParallel(net)
 
     elif args.model == "resnet32":
         net = resnet.__dict__['resnet32']()
@@ -259,13 +258,12 @@ def get_model():
         net = channel_pruning(net,torch.ones(120, 1))
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from
             print('=> Resuming from checkpoint..')
-            path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
-
+            path = args.ckpt_path
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
             net.load_state_dict(sd)
         if use_cuda and args.n_gpu > 1:
-            net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
+            net = torch.nn.DataParallel(net)
 
     elif args.model == "resnet20":
         net = resnet.__dict__['resnet20']()
@@ -273,13 +271,12 @@ def get_model():
         net = channel_pruning(net,torch.ones(100, 1))
         if args.ckpt_path is not None:  # assigned checkpoint path to resume from
             print('=> Resuming from checkpoint..')
-            path = os.path.join(args.ckpt_path, args.model+'ckpt.best.pth.tar')
-
+            path = args.ckpt_path
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
             net.load_state_dict(sd)
         if use_cuda and args.n_gpu > 1:
-            net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
+            net = torch.nn.DataParallel(net)
 
     elif args.model == 'shufflenet':
         from data.shufflenet import shufflenet
@@ -295,7 +292,7 @@ def get_model():
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
             net.load_state_dict(sd)
         if use_cuda and args.n_gpu > 1:
-            net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
+            net = torch.nn.DataParallel(net)
     elif args.model == 'shufflenetv2':
         from data.shufflenetv2 import shufflenetv2
         net = shufflenetv2()
@@ -309,7 +306,7 @@ def get_model():
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
             net.load_state_dict(sd)
         if use_cuda and args.n_gpu > 1:
-            net = torch.nn.DataParallel(net, list(range(args.n_gpu)))
+            net = torch.nn.DataParallel(net)
 
 
     else:
@@ -432,6 +429,7 @@ def save_checkpoint(state, is_best, checkpoint_dir='.'):
 
 
 if __name__ == '__main__':
+
     args = parse_args()
 
     use_cuda = torch.cuda.is_available()
@@ -461,8 +459,9 @@ if __name__ == '__main__':
     print('weight decay  = {}'.format(args.wd))
     print('Using SGD...')
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=args.wd)
-    # print('Using Adam...')
-    # optimizer = Adam(net.parameters(), lr=args.lr,weight_decay=args.wd)
+    # if args.model == 'mobilenetv2':
+    #     print('Using Adam...')
+    #     optimizer = Adam(net.parameters(), lr=args.lr,weight_decay=args.wd)
     if args.eval:  # just run eval
         print('=> Start evaluation...')
         test(0, val_loader, save=False)

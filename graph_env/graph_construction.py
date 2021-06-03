@@ -66,7 +66,7 @@ def net_info(model_name):
         depth_wise=[]
 
         from torchvision.models import mobilenet_v2
-        net = mobilenet_v2(n_class=1000)
+        net = mobilenet_v2()
         for name,layer in net.named_modules():
             if isinstance(layer,nn.Conv2d):
                 in_channels.append(layer.in_channels)

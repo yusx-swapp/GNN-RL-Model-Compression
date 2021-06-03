@@ -3,6 +3,8 @@ from copy import deepcopy
 import torch
 import torch.nn as nn
 import numpy as np, numpy
+from torchvision import models
+
 
 def layer_flops(layer, input_x):
     output_x = layer.forward(input_x)
@@ -40,6 +42,16 @@ def preserve_flops(Flops,preserve_ratio,model_name,a):
         for i in range(1, len(flops)):
             flops[i] *= preserve_ratio[i - 1]
 
+    elif model_name in ['mobilenetv2']:
+        flops = flops * np.array(preserve_ratio).reshape(-1)
+        for i in range(0, len(flops)):
+            if i+1<len(flops):
+                flops[i] *= preserve_ratio[i + 1]
+        for i in range(2, len(flops)):
+            flops[i] *= preserve_ratio[i - 1]
+        for i in range(3, len(flops)):
+            if i+1<len(flops):
+                flops[i] *= preserve_ratio[i -2 ]
     else:
         raise NotImplementedError
     return flops
@@ -77,7 +89,7 @@ def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
 
         flops_share = list(flops[1::2])
         flops_share.insert(0, sum(flops[::2]))
-    elif model_name in ['mobilenet','mobilenetv2','shufflenet','shufflenetv2']:
+    elif model_name in ['mobilenet','shufflenet','shufflenetv2']:
         for name, module in net.named_modules():
             if isinstance(module, nn.Conv2d):
                 input_x = torch.randn(input_x.shape[0],module.in_channels,input_x.shape[2],input_x.shape[3]).cuda()
@@ -119,12 +131,34 @@ def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
         if preserve_ratio is not None:
             flops = flops * np.array(preserve_ratio).reshape(-1)
             for i in range(1, len(flops)):
+
                 flops[i] *= preserve_ratio[i - 1]
+
         flops_share = flops
 
+    elif model_name in ['mobilenetv2']:
+        for name, module in net.named_modules():
+            if isinstance(module, nn.Conv2d):
+                input_x = torch.randn(input_x.shape[0],module.in_channels,input_x.shape[2],input_x.shape[3]).cuda()
+                flop, input_x = layer_flops(module, input_x)
+                flops.append(flop)
+        if preserve_ratio is not None:
+            flops = flops * np.array(preserve_ratio).reshape(-1)
+            for i in range(0, len(flops)):
+                if i+1<len(flops):
+                    flops[i] *= preserve_ratio[i + 1]
+            for i in range(2, len(flops)):
+                flops[i] *= preserve_ratio[i - 1]
+            for i in range(3, len(flops)):
+                if i+1<len(flops):
+                    flops[i] *= preserve_ratio[i -2 ]
+        flops_share= None
     else:
         raise NotImplementedError
 
     return flops, flops_share
 
 
+if __name__ == '__main__':
+    net = models.mobilenet_v2()
+    print(net)

@@ -254,6 +254,22 @@ def get_dataset(dset_name, batch_size, n_worker, data_root='../../data'):
         val_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False,
                                                  num_workers=n_worker, pin_memory=True)
         n_class = 10
+    elif dset_name == 'mnist':
+
+        dataset_train = torchvision.datasets.MNIST(root='./dataset_method_1', train=True, transform=torchvision.transforms.ToTensor(), download=True)
+        dataset_test = torchvision.datasets.MNIST(root='./dataset_method_1', train=False, transform=torchvision.transforms.ToTensor(), download=False)
+
+        data_loader_train = torch.utils.data.DataLoader(dataset=dataset_train, batch_size=100, shuffle=True)  #600*100*([[28*28],x])
+        data_loader_test = torch.utils.data.DataLoader(dataset=dataset_test, batch_size=100, shuffle=False)
+
+        trainset = torchvision.datasets.mnist(root=data_root, train=True, download=True, transform=transform_train)
+        train_loader = torch.utils.data.DataLoader(trainset, batch_size=batch_size, shuffle=True,
+                                                   num_workers=n_worker, pin_memory=True, sampler=None)
+        testset = torchvision.datasets.mnist(root=data_root, train=False, download=True, transform=transform_test)
+        val_loader = torch.utils.data.DataLoader(testset, batch_size=batch_size, shuffle=False,
+                                                 num_workers=n_worker, pin_memory=True)
+        n_class = 10
+
     elif dset_name == 'imagenet':
         # get dir
         traindir = os.path.join(data_root, 'train')

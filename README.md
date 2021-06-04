@@ -98,22 +98,21 @@ python -W ignore gnnrl_fine_tune.py \
    ```
 
 ## Results on CIFAR-10
-| Models                   | Compressed ratio | Top1 Acc. (%) | Dataset |
+| Models                   | FLOPs ratio | Top1 Acc. (%) | Dataset |
 | ------------------------ | ------------     | ------------ |------------|
 | ResNet-110                | 50% FLOPs        | **94.31**   |CIFAR-10|
 | ResNet-56                | 50% FLOPs        | **93.49**   |CIFAR-10|
 | ResNet-44                | 50% FLOPs       | **93.23**   |CIFAR-10|
 
 ## Results on ImageNet
-| Models                   | Compressed ratio | Top1 Acc. (%) |![\delta](http://latex.codecogs.com/svg.latex?{\Delta}) Acc.| Dataset |
+| Models                   | FLOPs ratio| Top1 Acc. (%) |![\delta](http://latex.codecogs.com/svg.latex?{\Delta}) Acc.| Dataset |
 | ------------------------ | ------------     | ------------ |------------|------------|
-| MobileNet-v1                | 40% FLOPs       | **69.5**  |**-1.10**  |ImageNet|
-| *MobileNet-v1                | 75% FLOPs       | **69.2**  |**-1.40**  |ImageNet|
+| MobileNet-v1                | 40% FLOPs       | **69.50**  |**-1.40**  |ImageNet|
+| MobileNet-v1                | 70% FLOPs       | **70.70**  |**-0.20**  |ImageNet|
+| MobileNet-v2                | 58% FLOPs       | **70.04**  |**-1.83**  |ImageNet|
 | VGG-16                | 20% FLOPs       | **70.992**   |**+0.49** |ImageNet|
-| *ResNet-18                | 75% FLOPs       | **68.66**   |**-1.10** |ImageNet|
-| *ResNet-18                | 50% FLOPs       | **67.39**   |**-2.37** |ImageNet|
+| ResNet-50                | 47% FLOPs       | **74.28**   |**-1.82** |ImageNet|
+| ResNet-18                | 50% FLOPs       | **68.66**   |**-1.10** |ImageNet|
 
-**Note**: 
-The DNNs with '*' are still in the fine-tuning process, and the results are the intermediate results and only fine-tuned with less than 150 epochs where the baselines are fine-tuned with 150 epochs.
-
+**Note**:
 We will continuously update results on ImageNet and add support for other popular networks.

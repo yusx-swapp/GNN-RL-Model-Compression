@@ -16,13 +16,13 @@ In this work, we compress DNNs by performing FLOPs-constrained channel pruning (
 In this subsection, DNNs are trained on CIFAR-10 since we observe a positive correlation between the pre-fine-tune accuracy and the post-fine-tuning accuracy. Pruning policies that obtain higher validation accuracy correspondingly have higher fine-tuned accuracy. It enables us to predict final model accuracy without fine-tuning, which results in an efficient and faster policy exploration.
 
 
-To search the strategy on ResNet-110 with channel pruning (filter pruning) on Conv layers, and prunes 40% FLOPs reduction, by running:
+To search the strategy on ResNet-110 with channel pruning (filter pruning) on Conv layers, and prunes 20% FLOPs reduction, by running:
    ```
-python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet110 --compression_ratio 0.4 --log_dir ./logs
+python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet110 --compression_ratio 0.2 --log_dir ./logs
    ```
-To search the strategy on ResNet-56 with channel pruning (filter pruning) on Conv layers, and prunes 50% FLOPs reduction, by running:
+To search the strategy on ResNet-56 with channel pruning (filter pruning) on Conv layers, and prunes 30% FLOPs reduction, by running:
   ```
-python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet56 --compression_ratio 0.5 --log_dir ./logs
+python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet56 --compression_ratio 0.3 --log_dir ./logs
    ```
 
 ### ImageNet (ILSVRC-2012)

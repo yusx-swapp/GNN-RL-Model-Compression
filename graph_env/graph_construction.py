@@ -83,7 +83,7 @@ def net_info(model_name):
         out_channels=[]
         depth_wise=[]
 
-        from data.mobilenet import MobileNet
+        from networks.mobilenet import MobileNet
         net = MobileNet(n_class=1000)
         for name,layer in net.named_modules():
             if isinstance(layer,nn.Conv2d):
@@ -101,7 +101,7 @@ def net_info(model_name):
         out_channels=[]
         depth_wise=[]
 
-        from data.mobilenet import MobileNet
+        from networks.mobilenet import MobileNet
         net = MobileNet(n_class=1000)
         for name,layer in net.named_modules():
             if isinstance(layer,nn.Conv2d):
@@ -117,7 +117,7 @@ def net_info(model_name):
         out_channels=[]
         depth_wise=[]
 
-        from data.mobilenet import MobileNet
+        from networks.mobilenet import MobileNet
         net = MobileNet(n_class=1000)
         for name,layer in net.named_modules():
             if isinstance(layer,nn.Conv2d):

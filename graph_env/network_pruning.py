@@ -1,6 +1,6 @@
 import sys
 
-from data.resnet import LambdaLayer
+from networks.resnet import LambdaLayer
 
 sys.path.append("..")
 

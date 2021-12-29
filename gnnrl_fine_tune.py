@@ -9,10 +9,9 @@ import torch.nn as nn
 import numpy as np
 from torch import optim
 
-from torch.optim import Adam
 from torchvision import models
 
-from data import resnet
+from networks import resnet
 from utils.train_utils import accuracy, AverageMeter, progress_bar, get_output_folder
 from graph_env.network_pruning import  channel_pruning
 from utils.split_dataset import get_dataset
@@ -127,7 +126,7 @@ def get_model():
 
     print('=> Building model..')
     if args.model == 'mobilenet':
-        from data.mobilenet import MobileNet
+        from networks.mobilenet import MobileNet
         net = MobileNet(n_class=1000)
         if args.finetuning:
             print("Fine-Tuning...")
@@ -165,7 +164,7 @@ def get_model():
             net = torch.nn.DataParallel(net)
 
     elif args.model == 'mobilenet_0.5flops':
-        from data.mobilenet_cifar100 import MobileNet
+        from networks.mobilenet_cifar100 import MobileNet
         net = MobileNet(n_class=1000, profile='0.5flops')
     elif args.model == 'vgg16':
         net = models.vgg16(pretrained=True)
@@ -279,7 +278,7 @@ def get_model():
             net = torch.nn.DataParallel(net)
 
     elif args.model == 'shufflenet':
-        from data.shufflenet import shufflenet
+        from networks.shufflenet import shufflenet
         net = shufflenet()
         if args.finetuning:
             print("Finetuning")
@@ -294,7 +293,7 @@ def get_model():
         if use_cuda and args.n_gpu > 1:
             net = torch.nn.DataParallel(net)
     elif args.model == 'shufflenetv2':
-        from data.shufflenetv2 import shufflenetv2
+        from networks.shufflenetv2 import shufflenetv2
         net = shufflenetv2()
         if args.finetuning:
             net = channel_pruning(net,torch.ones(100, 1))

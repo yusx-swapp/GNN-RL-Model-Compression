@@ -11,10 +11,10 @@ from utils.split_dataset import get_dataset
 
 
 
-def boolean_string(s):
-    if s not in {'False', 'True'}:
-        raise ValueError('Not a valid boolean string')
-    return s == 'True'
+# def boolean_string(s):
+#     if s not in {'False', 'True'}:
+#         raise ValueError('Not a valid boolean string')
+#     return s == 'True'
 def parse_args():
     parser = argparse.ArgumentParser(description='real pruning')
     #parser.add_argument()

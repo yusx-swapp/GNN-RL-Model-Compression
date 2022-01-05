@@ -1,0 +1,41 @@
+site_name: GNN-RL Pipeline
+site_url: 
+nav:
+  - "Get Started":
+    - "Overview": overview.md
+    - "Installation": Installation.md
+    - "Introduction by Example": intro.md
+  
+  - Model DNN as Graph: 
+    - Example : graph/example.md
+    - "Torch-geometric":  4.md
+    - "DGL":  5.md
+
+  - "Graph Neural Network":
+      - GCN-based graph encoder: gnn/graph_encoder.md
+      - Multi-stadge graph neural network:  gnn/multigcn.md
+
+  - "GNN-RL in Model Compression":
+      - "Network pruning": 6.md
+      - "DNN-graph environment for network pruning": 6.md
+
+
+  # - "Model DNN as Graph": 
+  #   - "Graph Neural Network Pakadge":
+  #     - "GNN Overview":  4.md
+  #     - DGL:  5.md
+  #     - Torch-Geometric: 6.md
+  #   - "Graph Neural Network Pakadge1":
+  #     - "GNN Overview":  4.md
+  #     - DGL:  5.md
+  #     - Torch-Geometric: 6.md
+  
+
+
+  - "Customize GNN-RL Pipeline": 
+    - GNN-RL on federated learning:  9.md  
+    - Rewrite the Graph Environment: 10.md
+  
+  - About Us: 
+    - SwAPP: swapp.md
+theme: readthedocs

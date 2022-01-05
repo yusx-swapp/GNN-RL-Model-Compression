@@ -60,7 +60,7 @@ class stage1_gcn_encoder(nn.Module):
         self.pool = global_mean_pool
 
     def forward(self,Graph):
-        x, edge_index,batch = Graph.x, Graph.edge_index,Graph.edge_features,Graph.batch
+        x, edge_index,batch = Graph.x, Graph.edge_index,Graph.batch
 
 
 

@@ -1,5 +1,7 @@
 # Installation
 
+Will release soon
+<!-- 
 Currently we support installation on Linux, Mac and Windows. We also allow you to use docker.
 
 DGL works with the following operating systems:
@@ -71,4 +73,4 @@ tinxi, ab.
 Invitus uvis preces mihi? Quam etiam en utque; alit et pro induroque dare
 profecturas iuvenum sollertia reperta resedit et traiecit gaude. Et non nymphae
 **utero temerarius cernit** egimus omnipotens hos, terrae, captum sanguine per;
-hiatu.
+hiatu. -->

@@ -16,8 +16,7 @@ nav:
       - Multi-stadge graph neural network:  gnn/multigcn.md
 
   - "GNN-RL in Model Compression":
-      - "Network pruning": 6.md
-      - "DNN-graph environment for network pruning": 6.md
+      - "Network pruning": compression/pruning.md
 
 
   # - "Model DNN as Graph": 
@@ -38,4 +37,9 @@ nav:
   
   - About Us: 
     - SwAPP: swapp.md
-theme: readthedocs
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - rust

@@ -36,9 +36,12 @@ fuit ille nostri quater lumina nec pectora Ixiona confessasque nostra et!
 
 ## Page Index
 Here is the index for you to quick locate the GNN-RL:
-> Sociis potentem summo, tamen consistere *amplexa in* pendere rursus nivosos. A
-> herbas excitus et tamen ego manibus ferebat parte. Acta dedit, e occursu
-> ferula in nomina laesi: suos. Crura iacens ora, tum ter officium nasci. 
+
+1. [Installation](installation.md)
+2. [Introduction by example](intro.md)
+3. [Model DNN as graph](graph/example.md)
+4. [GNN-RL in model compression](compression/pruning.md)
+5. [SwAPP lab](swapp.md)
 <!-- Avis gratia, est illa est inrita propiora suum **nunc** apte mulcebat et est.
 Pallados Iuppiter pererrant tu alios repetiti flexisque nec turbavere mutare
 adpositi nec illis vertice, illo Phinea mihi. Dentibus *nece*. Angues in sedit

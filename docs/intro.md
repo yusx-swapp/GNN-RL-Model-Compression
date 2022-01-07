@@ -1,5 +1,3 @@
-# Introduction By Example
-
 ## Neural Network Pruning Using GNN-RL
 Here we get start with GNN-RL by a brief example by using GNN-RL to solve network pruning task.
 Below are steps:
@@ -11,10 +9,12 @@ Below are steps:
 
 
 ## Load Target Neural Network
-GNN-RL provide build-in pre-trained deep neural network (e.g ResNet-20/32-56), can be easily load by ``load_model`` .
-
-    device = torch.device(args.device)
-    net = load_model(args.model,args.data_root)
+GNN-RL provide build-in pre-trained deep neural network (e.g ResNet-20/32-56), can be easily load by ``gnnrl.load_model`` .
+    
+    from gnnrl import load_model
+    import torch
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    net = load_model('vgg16')
     net.to(device)
 
 Iterate the network and get the number of convolutional layers (convolutional layers are ready to be pruned by GNN-RL),
@@ -24,20 +24,21 @@ Iterate the network and get the number of convolutional layers (convolutional la
             if isinstance(module, nn.Conv2d):
                 n_layer +=1
 
-Or you can use GNN-RL build-in function ``get_num_hidden_layer``,  which can easily get the number of target pruning layer of DNNs,
+Or you can use GNN-RL build-in function ``gnnrl.get_num_hidden_layer``,  which can easily get the number of target pruning layer of DNNs,
 
-    n_layer = get_num_hidden_layer(net,args.model)
+    from gnnrl import get_num_hidden_layer
+    n_layer = get_num_hidden_layer(net)
 
-Then, load the DNN's corresponding validation dataset (used to caculate rewards),
-
-    train_loader, val_loader, n_class = get_dataset(args.dataset, 256, args.n_worker,
-                                                        data_root=args.data_root)
+Then, load the DNN's corresponding validation dataset (used to caculate rewards) use ```gnnrl.data.getdataset```. Here we load the cifar-10 dataset with batch size 256.
+    
+    from gnnrl.data import get_dataset
+    train_loader, val_loader, n_class = get_dataset(cifar10, 256)
 
 ## DNN-Graph Environment for Neural Network Pruning
-GNN-RL modeling the DNN as a computatuinal graph, and constructs a graph environment to simulation the topology change when pruning. 
+GNN-RL modeling the DNN as a computatuinal graph, and constructs a graph environment to simulation the topology change when pruning. Environment can be constructed by ```gnnrl.graph_env```
 
-    env = graph_env(net,n_layer,args.dataset,val_loader,args.compression_ratio, 
-                                args.g_in_size,args.log_dir,input_x,device,args)
+    from gnnrl import graph_env
+    env = graph_env(net,n_layer,'cifar10',val_loader,0.5)
 
 The graph environment constructs and returns computational graph corresponding to DNN's current topology states. Meanwhile, the graph environment evaluates the size of DNN (e.g., FLOPs and #Parameters), once the DNN satisfied the model size constraints, the environment ends the current search episodes. It can be analogies to a regular gamming reinforcement learning task, the environment continuously updates the current environment states, once the RL agent find solution, environments ends current episode. 
 <!-- *Aperti multis perlucida* adhibere sustinet factus, huius opifex non reliqui
@@ -48,9 +49,9 @@ excipiuntur; iam aquam nequeo catenis manu ullis quoque, plus. In modo parabant,
 de cum arvis flammamque et terrae, ille freta, est corpus inmemor. -->
 ## Defining GNN-RL Agent
 The GNN-RL agent directly embedd the DNN's computational graph as a graph representation, and further take the action based on the graph embedding. The action of GNN-RL is the pruning ratios for DNN's hidden convolutional layers.
-
-    agent = Agent(state_dim=args.g_in_size, action_dim=layer_share, action_std = args.action_std, lr = args.lr, betas = args.beta,
-                     gamma = args.gamma, K_epochs = args.K_epochs, eps_clip = args.eps_clip)
+    
+    from gmmrl.lib.RL.agent import Memory, Agent
+    agent = Agent(state_dim=30, action_dim=layer_share, lr = 0.005, K_epochs = 10)
 
 The agent take the graph as input, and the policy network is the multi-stage GNN. The agent updates through DDPG reinforcement learning process.
 

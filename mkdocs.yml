@@ -4,21 +4,35 @@ nav:
   - "Get Started":
     - "Overview": overview.md
     - "Installation": Installation.md
-    - "Introduction by Example": intro.md
+    - "Introduction by example": intro.md
   
-  - Model DNN as Graph: 
-    - Example : graph/example.md
-    - "Torch-geometric":  4.md
-    - "DGL":  5.md
+  - Model DNN as Graph:
+      - Simplified computational graph: graph/simple.md
+      - Hierarchical graph: graph/hierarchi.md
+      - Build your customized graph: graph/custom.md
+      - Example : graph/example.md
+      - "Torch-geometric":  4.md
+      - "DGL":  5.md
 
   - "Graph Neural Network":
       - GCN-based graph encoder: gnn/graph_encoder.md
       - Multi-stadge graph neural network:  gnn/multigcn.md
-
+      - Build your customized GNN:  gnn/multigcn.md
   - "GNN-RL in Model Compression":
       - "Network pruning": compression/pruning.md
+  - "Customize GNN-RL Pipeline":
+      - GNN-RL on federated learning:  9.md
+      - Rewrite the Graph Environment: 10.md
 
-
+  - About Us:
+      - SwAPP: swapp.md
+  - API:
+      - gnnrl.lib: empty.md
+      - gnnrl.graph_env: empty.md
+      - gnnrl.data: empty.md
+      - gnnrl.models: empty.md
+      - gnnrl.utils: empty.md
+      - gnnrl.networks: empty.md
   # - "Model DNN as Graph": 
   #   - "Graph Neural Network Pakadge":
   #     - "GNN Overview":  4.md
@@ -31,12 +45,7 @@ nav:
   
 
 
-  - "Customize GNN-RL Pipeline": 
-    - GNN-RL on federated learning:  9.md  
-    - Rewrite the Graph Environment: 10.md
-  
-  - About Us: 
-    - SwAPP: swapp.md
+
 theme:
   name: readthedocs
   highlightjs: true

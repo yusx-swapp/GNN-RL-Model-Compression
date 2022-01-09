@@ -6,7 +6,7 @@ import torch
 import logging
 import numpy as np
 
-from gnn_rl_search import search
+from gnnrl_search import search
 from lib.RL.agent import Memory, Agent
 from parameter import parse_args
 from utils.load_networks import load_model

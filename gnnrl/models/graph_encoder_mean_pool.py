@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
-from torch_geometric.data import Data
 
-from models.multi_stage_gcn import multi_stage_conv as gcn
+from gnnrl.models.multi_stage_gcn import multi_stage_conv as gcn
 from torch_geometric.nn import GCNConv
 from torch_geometric.nn import global_mean_pool
 import torch.nn.functional as F
@@ -102,7 +101,7 @@ class multi_stage_graph_encoder(nn.Module):
             level_2_graph = hierarchical_graph['level2']
             graph_embeddings,node_embeddings = self.stage1_encoder(level_1_graphs)
 
-            from graph_env.graph_construction import create_edge_features
+            from gnnrl.graph_env.graph_construction import create_edge_features
             device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
             level_2_graph.edge_features = create_edge_features(level_2_graph.edge_type[0],graph_embeddings,device)
 

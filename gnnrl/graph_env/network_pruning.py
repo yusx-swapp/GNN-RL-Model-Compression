@@ -1,8 +1,8 @@
 import sys
 
-from networks.resnet import LambdaLayer
+from gnnrl.networks.resnet import LambdaLayer
 
-sys.path.append("..")
+sys.path.append("../..")
 
 import torch.nn.utils.prune as prune
 import copy

@@ -79,19 +79,15 @@ def top5validate(val_loader, device, model, criterion):
 #     return val_top1, val_top5
 
 
-def reward_caculation(args, pruned_model, val_loader, root='./logs'):
+def reward_caculation(pruned_model, val_loader, device):
     # here we do the pseudo pruning, by zero mask those pruned channel
-    device = torch.device(args.device)
+
 
     criterion = nn.CrossEntropyLoss().to(device)
     val_top1, val_top5 = top5validate(val_loader, device, pruned_model, criterion)
     #val_top1, val_top5 = error_caculation(pruned_model, val_loader, device)
     acc = val_top1
-    # if args.dataset == 'cifar10':
-    #     acc = val_top1
-    #
-    # elif args.dataset == 'ILSVRC':
-    #     acc = val_top5
+
 
     error = 100 - acc
     reward = error * -1

@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.append("..")
+sys.path.append("../..")
 
 import numpy as np
 from torch.utils.data.sampler import SubsetRandomSampler

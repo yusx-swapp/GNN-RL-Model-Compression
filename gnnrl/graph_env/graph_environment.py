@@ -17,22 +17,20 @@ import copy
 
 class graph_env:
 
-    def __init__(self,model,n_layer,dataset,val_loader,compression_ratio,g_in_size,log_dir,input_x,device,args):
+    def __init__(self,model,n_layer,dataset,val_loader,compression_ratio,g_in_size,log_dir,input_x,max_timesteps,model_name,device):
         #work space
-        self.args = args
         self.log_dir = log_dir
         self.device = device
 
         #DNN
         self.model = model
-        self.model_name = args.model
+        self.model_name = model_name
         self.pruned_model = None
         #self.pruning_index = pruning_index
         self.input_x = input_x
-        self.flops, self.flops_share = flops_caculation_forward(self.model, args.model, input_x, preserve_ratio=None)
+        self.flops, self.flops_share = flops_caculation_forward(self.model, self.model_name, input_x, preserve_ratio=None)
         self.total_flops = sum(self.flops)
-        # self.in_channels,self.out_channels,self.n_blocks = get_channels(args.model)
-        self.in_channels,self.out_channels,_ = net_info(args.model)
+        self.in_channels,self.out_channels,_ = net_info(self.model_name)
 
         self.preserve_in_c = copy.deepcopy(self.in_channels)
         self.preserve_out_c = copy.deepcopy(self.out_channels)
@@ -52,8 +50,8 @@ class graph_env:
         self.current_states = None
         #env
         self.done = False
-        self.max_timesteps = args.max_timesteps
-        _, accuracy,_,_ = reward_caculation(self.args, self.model, self.val_loader, root=self.log_dir)
+        self.max_timesteps = max_timesteps
+        _, accuracy,_,_ = reward_caculation(self.model, self.val_loader, self.device)
         print("Initial val. accuracy:",accuracy)
 
 
@@ -72,7 +70,7 @@ class graph_env:
 
         rewards = 0
         accuracy = 0
-        self.preserve_ratio *= 1 - np.array(share_layer_index(self.model,actions,self.args.model)).astype(float)
+        self.preserve_ratio *= 1 - np.array(share_layer_index(self.model,actions,self.model_name)).astype(float)
         # self.preserve_ratio *= 1 - np.array(share_layer_index(self.model,actions,self.args.model)).astype(float)
 
         if self.model_name in ['mobilenet','mobilenetv2']:
@@ -97,28 +95,15 @@ class graph_env:
             self.done = True
             self.pruned_model = channel_pruning(self.model,self.preserve_ratio)
             if self.dataset == "cifar10":
-                rewards, accuracy,_,_ = reward_caculation(self.args, self.pruned_model, self.val_loader, root=self.log_dir)
+                rewards, accuracy,_,_ = reward_caculation(self.pruned_model, self.val_loader, self.device )
             else:
-                _,_,rewards, accuracy = reward_caculation(self.args, self.pruned_model, self.val_loader, root=self.log_dir)
-            '''
-            if self.dataset == "cifar10":
-                rewards = -100
-                for i in range(10):
-                    pruned_model = channel_pruning(self.model,self.preserve_ratio)
-                    r, acc,_,_ = reward_caculation(self.args, pruned_model, self.val_loader, root=self.log_dir)
-                    if r > rewards:
-                        rewards = r
-                        accuracy = acc
-                        self.pruned_model = pruned_model
-            else:
-                self.pruned_model = channel_pruning(self.model,self.preserve_ratio)
-                _,_,rewards, accuracy = reward_caculation(self.args, self.pruned_model, self.val_loader, root=self.log_dir)
-            '''
+                _,_,rewards, accuracy = reward_caculation(self.pruned_model, self.val_loader, self.device )
+
             if accuracy > self.best_accuracy:
                 self.best_accuracy = accuracy
 
                 self.save_checkpoint({
-                    'model': self.args.model,
+                    'model': self.model_name,
                     'dataset': self.dataset,
                     'preserve_ratio':self.preserve_ratio,
                     'state_dict': self.pruned_model.module.state_dict() if isinstance(self.pruned_model, nn.DataParallel) else self.pruned_model.state_dict(),
@@ -147,9 +132,11 @@ class graph_env:
         graph = hierarchical_graph_construction(self.preserve_in_c,self.preserve_out_c,self.model_name,self.g_in_size,self.device)
         return graph
 
+    def model_to_graph_plain(self):
+        raise NotImplementedError
 
     def save_checkpoint(self,state, is_best, checkpoint_dir='.'):
-        filename = os.path.join(checkpoint_dir, self.args.model+'ckpt.pth.tar')
+        filename = os.path.join(checkpoint_dir, self.model_name+'ckpt.pth.tar')
         print('=> Saving checkpoint to {}'.format(filename))
         torch.save(state, filename)
         if is_best:

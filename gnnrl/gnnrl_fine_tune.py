@@ -467,7 +467,7 @@ if __name__ == '__main__':
     else:  # train
         print('=> Start training...')
         print('Training {} on {}...'.format(args.model, args.dataset))
-        log_dir = get_output_folder('./logs', '{}_{}_finetune'.format(args.model, args.dataset))
+        log_dir = get_output_folder('logs', '{}_{}_finetune'.format(args.model, args.dataset))
         print('=> Saving logs to {}'.format(log_dir))
         # tf writer
         # writer = SummaryWriter(logdir=log_dir)

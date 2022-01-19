@@ -234,7 +234,7 @@ def progress_bar(current, total, msg=None):
         sys.stdout.write('=')
     sys.stdout.write('>')
     for i in range(rest_len):
-        sys.stdout.write('.')
+        sys.stdout.write('')
     sys.stdout.write(']')
 
     cur_time = time.time()

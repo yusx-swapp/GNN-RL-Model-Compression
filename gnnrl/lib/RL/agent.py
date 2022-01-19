@@ -1,17 +1,15 @@
 import os
 
 # import gym
-import time
 
 import torch as T,torch
 import torch.nn as nn
 from torch.distributions import MultivariateNormal
-import numpy as np
 
-from models.graph_encoder import multi_stage_graph_encoder
+from gnnrl.models.graph_encoder import multi_stage_graph_encoder
+from gnnrl.models.graph_encoder_plain import graph_encoder_pyg
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-times=[]
 class Memory:
     def __init__(self):
         self.actions = []
@@ -61,6 +59,60 @@ class CriticNetwork(nn.Module):
 
         self.checkpoint_file = os.path.join(chkpt_dir, 'critic_torch_rl')
         self.graph_encoder_critic = multi_stage_graph_encoder(g_in_size, g_hidden_size, g_embedding_size)
+        self.linear1 = nn.Linear(g_embedding_size, 1)
+        self.tanh = nn.Tanh()
+        # self.sigmoid = nn.Sigmoid()
+
+        # self.optimizer = optim.Adam(self.parameters(), lr=alpha)
+        self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
+        self.to(self.device)
+
+    def forward(self, state):
+        g = self.graph_encoder_critic(state)
+        value = self.tanh(self.linear1(g))
+        return value
+
+    def save_checkpoint(self):
+        T.save(self.state_dict(), self.checkpoint_file)
+
+    def load_checkpoint(self):
+        self.load_state_dict(T.load(self.checkpoint_file))
+
+class ActorNetworkPlain(nn.Module):
+    def __init__(self,g_in_size, g_hidden_size, g_embedding_size,hidden_size, nb_actions,
+                 chkpt_dir='tmp/rl'):
+        super(ActorNetworkPlain, self).__init__()
+
+        self.checkpoint_file = os.path.join(chkpt_dir, 'actor_torch_rl')
+        self.graph_encoder = graph_encoder_pyg(g_in_size, g_hidden_size, g_embedding_size)
+        self.linear1 = nn.Linear(g_embedding_size,hidden_size)
+        self.linear2 = nn.Linear(hidden_size,nb_actions)
+        self.nb_actions = nb_actions
+        self.tanh = nn.Tanh()
+        self.relu = nn.ReLU()
+
+        self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu')
+        self.to(self.device)
+
+    def forward(self, state):
+        g = self.graph_encoder(state)
+        actions = self.relu(self.linear1(g))
+        actions = self.tanh(self.linear2(actions))
+        return actions
+
+    def save_checkpoint(self):
+        T.save(self.state_dict(), self.checkpoint_file)
+
+    def load_checkpoint(self):
+        self.load_state_dict(T.load(self.checkpoint_file))
+
+class CriticNetworkPlain(nn.Module):
+    def __init__(self, g_in_size, g_hidden_size, g_embedding_size,
+                 chkpt_dir='tmp/rl'):
+        super(CriticNetworkPlain, self).__init__()
+
+        self.checkpoint_file = os.path.join(chkpt_dir, 'critic_torch_rl')
+        self.graph_encoder_critic = graph_encoder_pyg(g_in_size, g_hidden_size, g_embedding_size)
         self.linear1 = nn.Linear(g_embedding_size, 1)
         self.tanh = nn.Tanh()
         # self.sigmoid = nn.Sigmoid()
@@ -134,6 +186,8 @@ class ActorCritic(nn.Module):
         
         return action_logprobs, torch.squeeze(state_value), dist_entropy
 
+
+
 class Agent:
     def __init__(self, state_dim, action_dim, action_std, lr, betas, gamma, K_epochs, eps_clip):
         self.lr = lr
@@ -190,15 +244,14 @@ class Agent:
             surr1 = ratios * advantages
             surr2 = torch.clamp(ratios, 1-self.eps_clip, 1+self.eps_clip) * advantages
             loss = -torch.min(surr1, surr2) + 0.5*self.MseLoss(state_values, rewards) - 0.01*dist_entropy
-            print('Epoches {} \t loss: {} \t '.format(_, loss.mean()))
-            start = time.time()
+            if _ % 5 == 0:
+                print('Epoches {} \t loss: {} \t '.format(_, loss.mean()))
+
             # take gradient step
             self.optimizer.zero_grad()
             loss.mean().backward()
             self.optimizer.step()
-            end = time.time()
-            times.append(end-start)
-        print("time:",times)
+
 
         # Copy new weights into old policy:
         self.policy_old.load_state_dict(self.policy.state_dict())

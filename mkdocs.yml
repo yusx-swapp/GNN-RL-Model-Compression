@@ -9,7 +9,7 @@ nav:
   - Model DNN as Graph:
       - Simplified computational graph: graph/simplified.md
       - Hierarchical graph: graph/hierarchi.md
-      - Build your customized graph: custom.md
+      - Build your customized graph: graph/custom.md
       - Example : graph/example.md
       - "Torch-geometric":  empty.md
       - "DGL":  empty.md
@@ -20,7 +20,8 @@ nav:
       - Build your customized GNN:  gnn/multigcn.md
       - Embed computational graph: empty.md
   - "GNN-RL in Model Compression":
-      - "Network pruning": compression/pruning.md
+      - "GNN-RL network pruning": compression/pruning.md
+      - "AGMC": empty.md
   - "Customize GNN-RL Pipeline":
       - GNN-RL on federated learning:  empty.md
       - Rewrite the Graph Environment: empty.md

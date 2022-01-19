@@ -3,11 +3,10 @@ import os
 import torch
 from torchvision import models
 
-from networks import resnet
+from gnnrl.networks import resnet
+
 
 def load_model(model_name,data_root,device=None):
-    if device==None:
-        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
     if model_name == "resnet56":
         net = resnet.__dict__['resnet56']()
@@ -60,7 +59,7 @@ def load_model(model_name,data_root,device=None):
         net = torch.nn.DataParallel(net)
 
     elif model_name == "mobilenet":
-        from networks.mobilenet import MobileNet
+        from gnnrl.networks.mobilenet import MobileNet
         net = MobileNet(n_class=1000)
         # net = torch.nn.DataParallel(net)
         sd = torch.load("data/pretrained_models/mobilenet_imagenet.pth.tar")
@@ -70,7 +69,7 @@ def load_model(model_name,data_root,device=None):
         # net = net.cuda()
         net = torch.nn.DataParallel(net)
     elif model_name == 'shufflenet':
-        from networks.shufflenet import shufflenet
+        from gnnrl.networks.shufflenet import shufflenet
         net = shufflenet()
         print('=> Resuming from checkpoint..')
         path = os.path.join(data_root, "pretrained_models", 'shufflenetbest.pth.tar')
@@ -79,7 +78,7 @@ def load_model(model_name,data_root,device=None):
         net.load_state_dict(sd)
         net = torch.nn.DataParallel(net)
     elif model_name == 'shufflenetv2':
-        from networks.shufflenetv2 import shufflenetv2
+        from gnnrl.networks.shufflenetv2 import shufflenetv2
         net = shufflenetv2()
         print('=> Resuming from checkpoint..')
         path = os.path.join(data_root, "pretrained_models", 'shufflenetv2.pth.tar')

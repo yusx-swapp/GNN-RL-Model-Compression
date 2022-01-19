@@ -10,7 +10,7 @@ import numpy as np
 import logging
 from torch_geometric.data import DataLoader
 
-from utils.batchwise_graphs import get_next_graph_batch
+from gnnrl.utils.batchwise_graphs import get_next_graph_batch
 
 logging.disable(30)
 
@@ -87,7 +87,7 @@ def net_info(model_name):
         out_channels=[]
         depth_wise=[]
 
-        from networks.mobilenet import MobileNet
+        from gnnrl.networks.mobilenet import MobileNet
         net = MobileNet(n_class=1000)
         for name,layer in net.named_modules():
             if isinstance(layer,nn.Conv2d):
@@ -105,7 +105,7 @@ def net_info(model_name):
         out_channels=[]
         depth_wise=[]
 
-        from networks.mobilenet import MobileNet
+        from gnnrl.networks.mobilenet import MobileNet
         net = MobileNet(n_class=1000)
         for name,layer in net.named_modules():
             if isinstance(layer,nn.Conv2d):
@@ -121,7 +121,7 @@ def net_info(model_name):
         out_channels=[]
         depth_wise=[]
 
-        from networks.mobilenet import MobileNet
+        from gnnrl.networks.mobilenet import MobileNet
         net = MobileNet(n_class=1000)
         for name,layer in net.named_modules():
             if isinstance(layer,nn.Conv2d):

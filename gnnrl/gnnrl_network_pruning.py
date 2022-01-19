@@ -142,11 +142,10 @@ torch.backends.cudnn.deterministic = True
 
 
 if __name__ == "__main__":
-    #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     args = parse_args()
     device = torch.device(args.device)
 
-    net = load_model(args.model,args.data_root)
+    net = load_model(args.model,args.data_root,device)
     net.to(device)
     cudnn.benchmark = True
 
@@ -178,8 +177,9 @@ if __name__ == "__main__":
 
 
 
-    env = graph_env(net,n_layer,args.dataset,val_loader,args.compression_ratio,args.g_in_size,args.log_dir,input_x,device,args)
-    agent = Agent(state_dim=args.g_in_size, action_dim=layer_share, action_std = args.action_std, lr = args.lr, betas = args.beta, gamma = args.gamma, K_epochs = args.K_epochs, eps_clip = args.eps_clip)
+    env = graph_env(net,n_layer,args.dataset,val_loader,args.compression_ratio,args.g_in_size,args.log_dir,input_x,args.max_timesteps,args.model,device)
+    betas = (0.9, 0.999)
+    agent = Agent(state_dim=args.g_in_size, action_dim=layer_share, action_std = args.action_std, lr = args.lr, betas = betas, gamma = args.gamma, K_epochs = args.K_epochs, eps_clip = args.eps_clip)
 
     # search(env)
     search(env,agent, update_timestep=args.update_timestep,max_timesteps=args.max_timesteps, max_episodes=args.max_episodes,

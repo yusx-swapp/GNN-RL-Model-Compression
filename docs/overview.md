@@ -1,6 +1,4 @@
-# GNN-RL pipeline
-
-## Overview
+## GNN-RL pipeline
 
 GNN-RL pipleline is a toolkit to help users extract topology information through reinforcement learning task (e.g., topology-aware neural network compression and job scheduling).
 GNN-RL contains two major part -- graph neural network (GNN) and reinforcement learning (RL). It requires your research object is a graph or been modeled as a graph, the reinforcement learning take the graph as environment states and produces actions by using a GNN-based policy network.

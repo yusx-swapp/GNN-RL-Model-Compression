@@ -21,8 +21,6 @@ def search(env,agent, update_timestep,max_timesteps, max_episodes,
     max_timesteps = max_timesteps  # max timesteps in one episode
 
     update_timestep = update_timestep  # update policy every n timesteps
-    # lr = lr  # parameters for Adam optimizer
-    betas = (0.9, 0.999)
 
     random_seed = random_seed
     #############################################
@@ -37,7 +35,6 @@ def search(env,agent, update_timestep,max_timesteps, max_episodes,
     memory = Memory()
 
 
-    # print("Learning rate: ", lr, '\t Betas: ', betas)
 
     # logging variables
     running_reward = 0
@@ -60,16 +57,10 @@ def search(env,agent, update_timestep,max_timesteps, max_episodes,
 
             # update if its time
             if time_step % update_timestep == 0:
-                # start = time.time()
-
                 print("-*" * 10, "start training the RL agent", "-*" * 10)
                 agent.update(memory)
                 memory.clear_memory()
                 time_step = 0
-
-                # end = time.time()
-                # times.append(end-start)
-
                 print("-*" * 10, "start search the pruning policies", "-*" * 10)
 
             running_reward += reward
@@ -101,3 +92,4 @@ def search(env,agent, update_timestep,max_timesteps, max_episodes,
             print('Episode {} \t Avg length: {} \t Avg reward: {}'.format(i_episode, avg_length, running_reward))
             running_reward = 0
             avg_length = 0
+

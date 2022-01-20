@@ -70,4 +70,13 @@ If you find our useful or use our work in your job, please cite the paper:
       archivePrefix={arXiv},
       primaryClass={cs.CV}
 }
+
+@InProceedings{yu2021agmc,
+    author    = {Yu, Sixing and Mazaheri, Arya and Jannesari, Ali},
+    title     = {Auto Graph Encoder-Decoder for Neural Network Pruning},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+    month     = {October},
+    year      = {2021},
+    pages     = {6362-6372}
+}
 ```

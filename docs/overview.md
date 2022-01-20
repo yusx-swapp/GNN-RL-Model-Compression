@@ -35,7 +35,7 @@ fuit ille nostri quater lumina nec pectora Ixiona confessasque nostra et!
 ## Page Index
 Here is the index for you to quick locate the GNN-RL:
 
-1. [Installation](installation.md)
+1. [Installation](Installation.md)
 2. [Introduction by example](intro.md)
 3. [Model DNN as graph](graph/example.md)
 4. [GNN-RL in model compression](compression/pruning.md)

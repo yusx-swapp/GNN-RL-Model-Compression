@@ -2,13 +2,12 @@ import os
 import shutil
 import torch
 import torch.nn as nn
-import sys
-sys.path.append("./graph_env")
-from graph_construction import hierarchical_graph_construction, net_info
-from feedback_calculation import reward_caculation
-from flops_calculation import flops_caculation_forward, preserve_flops
-from share_layers import share_layer_index
-from network_pruning import channel_pruning
+
+from gnnrl.graph_env.graph_construction import hierarchical_graph_construction, net_info
+from gnnrl.graph_env.feedback_calculation import reward_caculation
+from gnnrl.graph_env.flops_calculation import flops_caculation_forward, preserve_flops
+from gnnrl.graph_env.share_layers import share_layer_index
+from gnnrl.graph_env.network_pruning import channel_pruning
 
 
 import numpy as np

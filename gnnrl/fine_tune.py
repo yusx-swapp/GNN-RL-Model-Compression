@@ -11,10 +11,10 @@ from torch import optim
 
 from torchvision import models
 
-from networks import resnet
-from utils.train_utils import accuracy, AverageMeter, progress_bar, get_output_folder
-from graph_env.network_pruning import  channel_pruning
-from utils.split_dataset import get_dataset
+from gnnrl.networks import resnet
+from gnnrl.utils.train_utils import accuracy, AverageMeter, progress_bar, get_output_folder
+from gnnrl.graph_env.network_pruning import  channel_pruning
+from gnnrl.utils.split_dataset import get_dataset
 def weights_init(m):
     if isinstance(m, nn.Conv2d):
         m.reset_parameters()

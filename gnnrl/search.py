@@ -2,7 +2,7 @@ import torch.backends.cudnn as cudnn
 import torch
 import logging
 import numpy as np
-from lib.RL.agent import Memory
+from gnnrl.lib.RL.agent import Memory
 logging.disable(30)
 
 torch.backends.cudnn.deterministic = True

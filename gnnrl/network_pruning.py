@@ -1,20 +1,18 @@
 import os
 
 import torch.backends.cudnn as cudnn
-
 import torch
 import logging
-import numpy as np
 
-from gnnrl_search import search
-from lib.RL.agent import Memory, Agent
+from search import search
+from gnnrl.lib.RL.agent import Agent
 from parameter import parse_args
-from utils.load_networks import load_model
-from utils.net_info import get_num_hidden_layer
+from gnnrl.utils.load_networks import load_model
+from gnnrl.utils.net_info import get_num_hidden_layer
 
 logging.disable(30)
-from graph_env.graph_environment import graph_env
-from utils.split_dataset import get_split_valset_ImageNet, get_split_train_valset_CIFAR, get_dataset
+from gnnrl.graph_env.graph_environment import graph_env
+from gnnrl.utils.split_dataset import get_split_valset_ImageNet, get_split_train_valset_CIFAR, get_dataset
 
 torch.backends.cudnn.deterministic = True
 

@@ -2,7 +2,7 @@ from copy import deepcopy
 
 import torch
 import torch.nn as nn
-import numpy as np, numpy
+import numpy as np
 from torchvision import models
 
 

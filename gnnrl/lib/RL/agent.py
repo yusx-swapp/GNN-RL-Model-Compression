@@ -1,7 +1,5 @@
 import os
 
-# import gym
-
 import torch as T,torch
 import torch.nn as nn
 from torch.distributions import MultivariateNormal

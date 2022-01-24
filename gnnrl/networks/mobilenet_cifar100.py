@@ -8,7 +8,6 @@
     https://arxiv.org/abs/1704.04861
 """
 
-import torch
 import torch.nn as nn
 
 

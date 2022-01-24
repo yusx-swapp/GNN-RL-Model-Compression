@@ -16,7 +16,7 @@ GNN-RL provide build-in pre-trained deep neural network (e.g ResNet-20/32-56), c
 from gnnrl.utils.load_networks import load_model
 import torch
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-net = load_model('resnet56','./data')
+net = load_model('resnet56', data_root='.')
 net = net.to(device)
 ```
 
@@ -129,9 +129,7 @@ for i_episode in range(1, max_episodes + 1):
             env.render()
         if done:
             break
-
     avg_length += t
-
 
 ```
 Logging and save the intermediate state dictionary,

@@ -10,7 +10,7 @@ nav:
       - Simplified computational graph: graph/simplified.md
       - Hierarchical graph: graph/hierarchi.md
       - Build your customized graph: graph/custom.md
-      - Example : graph/example.md
+#      - Example : graph/example.md
       - "Torch-geometric":  empty.md
       - "DGL":  empty.md
 

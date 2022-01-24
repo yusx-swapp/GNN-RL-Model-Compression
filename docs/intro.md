@@ -13,38 +13,41 @@ Below are steps:
 GNN-RL provide build-in pre-trained deep neural network (e.g ResNet-20/32-56), can be easily load by ``gnnrl.load_networks.load_model`` .
     
 ```python
-from gnnrl import load_model
+from gnnrl.utils.load_networks import load_model
 import torch
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-net = load_model('vgg16')
-net.to(device)
+net = load_model('resnet56','./data')
+net = net.to(device)
 ```
 
 Iterate the network and get the number of convolutional layers (convolutional layers are ready to be pruned by GNN-RL),
 ```python
+from torch import nn
 n_layer = 0
 for name, module in net.named_modules():
-        if isinstance(module, nn.Conv2d):
-            n_layer +=1
+    if isinstance(module, nn.Conv2d):
+        n_layer +=1
 ```
-Or you can use GNN-RL build-in function ``gnnrl.get_num_hidden_layer``,  which can easily get the number of target pruning layer of DNNs,
+Or you can use GNN-RL build-in function ``gnnrl.utils.net_info.get_num_hidden_layer``,  which can easily get the number of target pruning layer of DNNs,
 
 ```python
-from gnnrl import get_num_hidden_layer
-n_layer = get_num_hidden_layer(net)
+from gnnrl.utils.net_info import get_num_hidden_layer
+n_layer,_ = get_num_hidden_layer(net,'resnet56')
 ```
 
 Then, load the DNN's corresponding validation dataset (used to caculate rewards) use ```gnnrl.data.getdataset```. Here we load the cifar-10 dataset with batch size 256.
 ```python
-from gnnrl.data import get_dataset
-train_loader, val_loader, n_class = get_dataset(cifar10, 256)
+from gnnrl.utils.split_dataset import get_dataset
+train_loader, val_loadtrain_loader, val_loader, n_class = get_dataset("cifar10", batch_size=256, n_worker=8,data_root='.')
 ```
 ## DNN-Graph Environment for Neural Network Pruning
 GNN-RL modeling the DNN as a computatuinal graph, and constructs a graph environment to simulation the topology change when pruning. Environment can be constructed by ```gnnrl.graph_env```
 ```python
-from gnnrl import graph_env
-env = graph_env(net,n_layer,'cifar10',val_loader,0.5)
+from gnnrl.graph_env.graph_environment import graph_env
+input_x = torch.randn([1,3,32,32]).to(device)
+env = graph_env(net,n_layer,"cifar10",val_loader,compression_ratio=0.4,g_in_size=20,log_dir=".",input_x=input_x,max_timesteps=5,model_name="resnet56",device=device)
 ```
+Here the `input_x` is a random place holder for a single data point in the chosen dataset, and used to caculate the FLOPs or MACs.
 
 
 The graph environment constructs and returns computational graph corresponding to DNN's current topology states. Meanwhile, the graph environment evaluates the size of DNN (e.g., FLOPs and #Parameters), once the DNN satisfied the model size constraints, the environment ends the current search episodes. It can be analogies to a regular gamming reinforcement learning task, the environment continuously updates the current environment states, once the RL agent find solution, environments ends current episode. 
@@ -58,7 +61,8 @@ de cum arvis flammamque et terrae, ille freta, est corpus inmemor. -->
 The GNN-RL agent directly embedd the DNN's computational graph as a graph representation, and further take the action based on the graph embedding. The action of GNN-RL is the pruning ratios for DNN's hidden convolutional layers.
 ```python
 from gnnrl.lib.RL.agent import Agent
-agent = Agent(state_dim=30, action_dim=n_layer, lr = 0.005, K_epochs = 10)
+betas = (0.9, 0.999)
+agent = Agent(state_dim=20, action_dim=n_layer, action_std = 0.5, lr = 0.0003, betas = (0.9, 0.999), gamma = 0.99, K_epochs = 10, eps_clip = 0.2)
 ```
 
 The agent take the graph as input, and the policy network is the multi-stage GNN. The agent updates through DDPG reinforcement learning process.
@@ -135,7 +139,7 @@ Logging and save the intermediate state dictionary,
 ```python
     # stop training if avg_reward > solved_reward
     if (i_episode % log_interval) != 0 and running_reward / (i_episode % log_interval) > (solved_reward):
-        print("########## Solved! ##########")
+        print("Solved!")
         torch.save(agent.policy.state_dict(), './rl_solved_{}.pth'.format(env_name))
         break;
 
@@ -157,18 +161,12 @@ Logging and save the intermediate state dictionary,
 ```
 
 
-GNN-RL provides easy way to search and train the policy network, by calling the ```gnnrl.gnnrl_search.search```, you only need define the search hyper-parameters:
+GNN-RL provides easy way to search and train the policy network, by calling the ```gnnrl.search```, you only need define the search hyper-parameters:
+
 ```python
-from gnnrl.gnnrl_search import search
-solved_reward = -10  # stop training if avg_reward > solved_reward
-log_interval = 50  # print avg reward in the interval
-max_episodes = 100  # max training episodes (search rounds)
-max_timesteps = 5  # max timesteps in one episode
-update_timestep = 50  # update policy every n timesteps
-betas = (0.9, 0.999)
-random_seed = 0
-search(env,agent, update_timestep=update_timestep,max_timesteps=max_timesteps, 
-       max_episodes=max_episodes,log_interval=10, solved_reward=solved_reward, random_seed=random_seed)
+from gnnrl.search import search
+search(env,agent, update_timestep=100,max_timesteps=5, max_episodes=15000,
+       log_interval=10, solved_reward=-10, random_seed=None)
 ```
 
 <!-- 

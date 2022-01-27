@@ -154,7 +154,6 @@ def net_info(model_name):
                 in_channels.append(layer.in_channels)
                 out_channels.append(layer.out_channels)
         return in_channels,out_channels,[]
-
     elif model_name == 'resnet50':
         in_channels = []
         out_channels=[]
@@ -166,6 +165,7 @@ def net_info(model_name):
                 in_channels.append(layer.in_channels)
                 out_channels.append(layer.out_channels)
         return in_channels,out_channels,[]
+
 def create_edge_features(edge_types,type_features,device):
     if max(edge_types)> len(type_features):
         #random initial primitive operation like batch norm

@@ -27,7 +27,8 @@ nav:
       - Rewrite the Graph Environment: empty.md
 
   - About Us:
-      - SwAPP: swapp.md
+#      - SwAPP: swapp.md
+      - SwAPP: empty.md
   - API:
       - gnnrl.lib: empty.md
       - gnnrl.graph_env: empty.md

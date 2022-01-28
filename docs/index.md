@@ -63,13 +63,3 @@ cornum superis. -->
 
 ## Related Papers
 If you find our useful or use our work in your job, please cite the paper:
-```
-@article{yu2021gnnrl,
-      title={GNN-RL Compression: Topology-Aware Network Pruning using Multi-stage Graph Embedding and Reinforcement Learning}, 
-      author={Sixing Yu and Arya Mazaheri and Ali Jannesari},
-      year={2021},
-      eprint={2102.03214},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
-}
-```

@@ -39,7 +39,6 @@ Here is the index for you to quick locate the GNN-RL:
 2. [Introduction by example](intro.md)
 3. [Model DNN as graph](graph/simplified.md)
 4. [GNN-RL in model compression](compression/pruning.md)
-5. [SwAPP lab](swapp.md)
 <!-- Avis gratia, est illa est inrita propiora suum **nunc** apte mulcebat et est.
 Pallados Iuppiter pererrant tu alios repetiti flexisque nec turbavere mutare
 adpositi nec illis vertice, illo Phinea mihi. Dentibus *nece*. Angues in sedit

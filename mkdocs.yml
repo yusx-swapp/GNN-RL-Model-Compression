@@ -9,7 +9,7 @@ nav:
   - Model DNN as Graph:
       - Simplified computational graph: graph/simplified.md
       - Hierarchical graph: graph/hierarchi.md
-      - Build your customized graph: graph/custom.md
+      - Build your customized graph: empty.md
 #      - Example : graph/example.md
       - "Torch-geometric":  empty.md
       - "DGL":  empty.md

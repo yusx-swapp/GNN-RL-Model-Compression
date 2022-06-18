@@ -26,7 +26,7 @@ nav:
       - GNN-RL on federated learning:  empty.md
       - Rewrite the Graph Environment: empty.md
 
-   - About Us:
+  - About Us:
       - SwAPP: swapp.md
 
   - API:

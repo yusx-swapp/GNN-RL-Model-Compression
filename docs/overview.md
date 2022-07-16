@@ -61,21 +61,21 @@ cornum superis. -->
 ## Related Papers
 If you find our useful or use our work in your job, please cite the paper:
 
-    @article{yu2021gnnrl,
-          title={GNN-RL Compression: Topology-Aware Network Pruning using Multi-stage Graph Embedding and Reinforcement Learning}, 
-          author={Sixing Yu and Arya Mazaheri and Ali Jannesari},
-          year={2021},
-          eprint={2102.03214},
-          archivePrefix={arXiv},
-          primaryClass={cs.CV}
+    @InProceedings{yu2022gnnrl,
+      title = 	 {Topology-Aware Network Pruning using Multi-stage Graph Embedding and Reinforcement Learning},
+      author =       {Yu, Sixing and Mazaheri, Arya and Jannesari, Ali},
+      booktitle = 	 {Proceedings of the 39th International Conference on Machine Learning},
+      pages = 	 {25656--25667},
+      year = 	 {2022},
+      volume = 	 {162},
+      series = 	 {Proceedings of Machine Learning Research},
+      month = 	 {17--23 Jul},
+      publisher =    {PMLR},
+      pdf = 	 {https://proceedings.mlr.press/v162/yu22e/yu22e.pdf},
+      url = 	 {https://proceedings.mlr.press/v162/yu22e.html},
     }
-    
-    @article{yu2021spatl,
-      title={SPATL: Salient Parameter Aggregation and Transfer Learning for Heterogeneous Clients in Federated Learning},
-      author={Yu, Sixing and Nguyen, Phuong and Abebe, Waqwoya and Anwar, Ali and Jannesari, Ali},
-      journal={arXiv preprint arXiv:2111.14345},
-      year={2021}
-    }
+
+
     
     @InProceedings{yu2021agmc,
         author    = {Yu, Sixing and Mazaheri, Arya and Jannesari, Ali},
@@ -84,4 +84,11 @@ If you find our useful or use our work in your job, please cite the paper:
         month     = {October},
         year      = {2021},
         pages     = {6362-6372}
+    }
+
+    @article{yu2021spatl,
+      title={SPATL: Salient Parameter Aggregation and Transfer Learning for Heterogeneous Clients in Federated Learning},
+      author={Yu, Sixing and Nguyen, Phuong and Abebe, Waqwoya and Anwar, Ali and Jannesari, Ali},
+      journal={arXiv preprint arXiv:2111.14345},
+      year={2021}
     }

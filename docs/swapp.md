@@ -12,5 +12,5 @@ Visit our lab page for more information: [SwAPP](https://www.cs.iastate.edu/swap
 ## Contributor of this Project
 
 * `Dr. Ali Jannesari`, Director of Software Analytics and Pervasive Parallelism (SwAPP) Lab
-* `Sixing Yu`, SwAPP Researcher, PhD student at Iowa State University
-<!-- * `Jahid Hasan`, Research Assistant -->
+* `Sixing Yu`, SwAPP Researcher, PhD Student at Iowa State University
+* `Dr. Arya Mazaheri`, Research Associates, Scientific Staff at Technical University of Darmstadt

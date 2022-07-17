@@ -66,17 +66,15 @@ If you find our useful or use our work in your job, please cite the paper:
 
 
     @InProceedings{yu2022gnnrl,
-      title = 	 {Topology-Aware Network Pruning using Multi-stage Graph Embedding and Reinforcement Learning},
-      author =       {Yu, Sixing and Mazaheri, Arya and Jannesari, Ali},
-      booktitle = 	 {Proceedings of the 39th International Conference on Machine Learning},
-      pages = 	 {25656--25667},
-      year = 	 {2022},
-      volume = 	 {162},
-      series = 	 {Proceedings of Machine Learning Research},
-      month = 	 {17--23 Jul},
-      publisher =    {PMLR},
-      pdf = 	 {https://proceedings.mlr.press/v162/yu22e/yu22e.pdf},
-      url = 	 {https://proceedings.mlr.press/v162/yu22e.html},
+      title     = {Topology-Aware Network Pruning using Multi-stage Graph Embedding and Reinforcement Learning},
+      author    = {Yu, Sixing and Mazaheri, Arya and Jannesari, Ali},
+      booktitle = {Proceedings of the 39th International Conference on Machine Learning},
+      pages     = {25656--25667},
+      year      = {2022},
+      volume    = {162},
+      series    = {Proceedings of Machine Learning Research},
+      month     = {17--23 Jul},
+      publisher = {PMLR},
     }
 
 

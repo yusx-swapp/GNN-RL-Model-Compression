@@ -1,5 +1,5 @@
 site_name: GNN-RL Pipeline
-site_url: 
+site_url:
 nav:
   - "Get Started":
     - "Overview": overview.md
@@ -19,9 +19,11 @@ nav:
       - Multi-stadge graph neural network:  gnn/multigcn.md
       - Build your customized GNN:  gnn/multigcn.md
       - Embed computational graph: empty.md
+
   - "GNN-RL in Model Compression":
       - "GNN-RL network pruning": compression/pruning.md
       - "AGMC": empty.md
+
   - "Customize GNN-RL Pipeline":
       - GNN-RL on federated learning:  empty.md
       - Rewrite the Graph Environment: empty.md

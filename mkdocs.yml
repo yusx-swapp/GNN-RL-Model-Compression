@@ -1,7 +1,6 @@
 site_name: GNN-RL Pipeline
 site_url:
 nav:
-  - Home: 'index.md'
 
   - "Get Started":
     - "Overview": overview.md

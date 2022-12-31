@@ -61,6 +61,25 @@ cornum superis. -->
 ## Related Papers
 If you find our useful or use our work in your job, please cite the paper:
 
+[1] *Sixing Yu, Phuong Nguyen, Waqwoya Abebe, Ali Anwar, Ali Jannesari: SPATL: Salient Parameter Aggregation and Transfer Learning for Heterogeneous Federated Learning. In Proc. of the International Conference for High Performance Computing, Networking, Storage, and Analysis (SC), Dallas, TX, USA, pages 1–13, November 2022.*
+
+[2] *Sixing Yu, Arya Mazaheri, Ali Jannesari: Topology-Aware Network Pruning using Multi-stage Graph Embedding and Reinforcement Learning. In Proc. of the 39th International Conference on Machine Learning (ICML), Baltimore, Maryland, USA, p. 25656–25667, July 2022. (Long presentation acceptance rate: 2%*
+
+[3] *Sixing Yu, Arya Mazaheri, Ali Jannesari: Auto Graph Encoder-Decoder for Neural Network Pruning. In Proc. of the IEEE/CVF International Conference on Computer Vision (ICCV), pp. 6362-6372, IEEE, October 2021.*
+
+      @InProceedings {yu2021spatl,
+      title = {SPATL: Salient Parameter Aggregation and Transfer Learning for Heterogeneous Federated Learning},
+      author = {S. Yu and P. Nguyen and W. Abebe and W. Qian and A. Anwar and A. Jannesari},
+      booktitle = {2022 SC22: International Conference for High Performance Computing, Networking, Storage and Analysis (SC) (SC)},
+      year = {2022},
+      issn = {2167-4337},
+      pages = {495-508},
+      keywords = {federated learning;heterogeneous system;machine learning;ml;fl},
+      publisher = {IEEE Computer Society},
+      address = {Los Alamitos, CA, USA},
+      month = {nov}
+      }
+
     @InProceedings{yu2022gnnrl,
       title = 	 {Topology-Aware Network Pruning using Multi-stage Graph Embedding and Reinforcement Learning},
       author =       {Yu, Sixing and Mazaheri, Arya and Jannesari, Ali},
@@ -86,9 +105,4 @@ If you find our useful or use our work in your job, please cite the paper:
         pages     = {6362-6372}
     }
 
-    @article{yu2021spatl,
-      title={SPATL: Salient Parameter Aggregation and Transfer Learning for Heterogeneous Clients in Federated Learning},
-      author={Yu, Sixing and Nguyen, Phuong and Abebe, Waqwoya and Anwar, Ali and Jannesari, Ali},
-      journal={arXiv preprint arXiv:2111.14345},
-      year={2021}
-    }
+ 

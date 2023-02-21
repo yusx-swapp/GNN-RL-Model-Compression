@@ -1,2 +1,4 @@
 # Project exclude paths
 /gnnrl/data/pytorch_cifar100/
+/site
+.idea

@@ -262,7 +262,7 @@ def level1_graph(in_channel,feature_size,net_name='resnet110',device=None):
             G.x = torch.randn([G.num_nodes,feature_size]).to(device)
             level_1_graphs.append(G.to(device))
 
-    elif net_name == 'mobilenetv2':
+    elif net_name in ['mobilenetv2','shufflenetv2']:
         _, __ ,depth_wise = net_info(net_name)
         for i,in_c in enumerate(in_channel):
             if depth_wise[i]:
@@ -273,6 +273,7 @@ def level1_graph(in_channel,feature_size,net_name='resnet110',device=None):
             G = Data(edge_index=torch.tensor(edge_index).long().t().contiguous())
             G.x = torch.randn([G.num_nodes,feature_size]).to(device)
             level_1_graphs.append(G.to(device))
+
     elif net_name == 'vgg16':
         for in_c in in_channel:
             edge_index = conv_motif(in_c)
@@ -327,7 +328,7 @@ def level2_graph(type_dict,out_channels,net_name,n_features=20,device=None):
                 edge_type.append(type_dict['ReLu'])
                 node_cur += 1
         Graph = Data(edge_index=torch.tensor(edge_list).t().contiguous(),edge_type =edge_type)
-    elif net_name == 'mobilenetv2':
+    elif net_name in ['mobilenetv2','shufflenetv2']:
         _, __ ,depth_wise = net_info(net_name)
         for i in range(len(out_channels)):
             if depth_wise[i]:

@@ -4,8 +4,11 @@ import torch
 import torch.nn as nn
 import numpy as np
 from torchvision import models
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy import stats
 
-
+# data = []
 def layer_flops(layer, input_x):
     output_x = layer.forward(input_x)
     if isinstance(layer, torch.nn.Conv2d):
@@ -15,8 +18,16 @@ def layer_flops(layer, input_x):
         h_out = output_x.shape[2]
         w_out = output_x.shape[3]
         kernel_h, kernel_w = layer.kernel_size
-
+        m = f'{kernel_h}*{kernel_w}'
+        # data.append(m)
+        print(f'{kernel_h}*{kernel_w}')
+        # print(x)
+        # print(c_in)
+        # print(c_out)
+        # print(h_out)
+        # print(w_out)
         flops = h_out * w_out * (c_in * (2 * kernel_h * kernel_w - 1) + 1) * c_out / layer.groups
+        # print(flops)
 
     else:
         raise TypeError
@@ -42,7 +53,7 @@ def preserve_flops(Flops,preserve_ratio,model_name,a):
         for i in range(1, len(flops)):
             flops[i] *= preserve_ratio[i - 1]
 
-    elif model_name in ['mobilenetv2']:
+    elif model_name in ['mobilenetv2','shufflenetv2']:
         flops = flops * np.array(preserve_ratio).reshape(-1)
         for i in range(0, len(flops)):
             if i+1<len(flops):
@@ -52,12 +63,19 @@ def preserve_flops(Flops,preserve_ratio,model_name,a):
         for i in range(3, len(flops)):
             if i+1<len(flops):
                 flops[i] *= preserve_ratio[i -2 ]
+
+    elif model_name == 'vgg16':
+        flops = flops * np.array(preserve_ratio).reshape(-1)
+        for i in range(1, len(flops)):
+            flops[i] *= preserve_ratio[i - 1]
+        flops_share = flops
+
     else:
-        raise NotImplementedError
+        raise NotImplementedError(f"Model {model_name} is not implemented in preserve_flops")
     return flops
 def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
     # TODO layer flops
-
+    data = []
     flops = []
     if model_name in ['resnet110','resnet56','resnet44','resnet32','resnet20']:
         module = net.module.conv1
@@ -69,7 +87,6 @@ def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
             for i, (name, module) in enumerate(layer.named_children()):
                 flop, input_x = layer_flops(module.conv1, input_x)
                 flops.append(flop)
-
                 flop, input_x = layer_flops(module.conv2, input_x)
                 flops.append(flop)
 
@@ -92,6 +109,10 @@ def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
     elif model_name in ['mobilenet','shufflenet','shufflenetv2']:
         for name, module in net.named_modules():
             if isinstance(module, nn.Conv2d):
+
+                # print(name)
+                print(module.out_channels)
+                data.append(module.out_channels)
                 input_x = torch.randn(input_x.shape[0],module.in_channels,input_x.shape[2],input_x.shape[3]).cuda()
                 flop, input_x = layer_flops(module, input_x)
                 flops.append(flop)
@@ -108,6 +129,18 @@ def flops_caculation_forward(net, model_name, input_x, preserve_ratio=None):
 
             flops[1::2] = flops[1::2] * np.array(preserve_ratio[:-1]).reshape(-1)
             flops[1::2] = flops[1::2] * np.array(preserve_ratio[:-1]).reshape(-1)
+
+        # print(data)
+        # # data = self.flops
+        # res_freq = stats.relfreq(data, numbins=20)
+        #
+        # pdf_value = res_freq.frequency
+        #
+        # cdf_value = np.cumsum(res_freq.frequency)
+        # x = res_freq.lowerlimit + np.linspace(0, res_freq.binsize * res_freq.frequency.size, res_freq.frequency.size)
+        # # plt.bar(x, pdf_value, width=res_freq.binsize)
+        # plt.plot(x, cdf_value)
+        # plt.show()
 
         flops_share = list(flops[::2])
     elif model_name == 'vgg16':

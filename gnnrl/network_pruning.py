@@ -3,7 +3,14 @@ import os
 import torch.backends.cudnn as cudnn
 import torch
 import logging
+import sys
+import os
 
+# 获取当前文件的上级目录路径
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+# asldkjasldk
+# 将上级目录路径添加到 sys.path
+sys.path.append(parent_dir)
 from search import search
 from gnnrl.lib.RL.agent import Agent
 from parameter import parse_args
@@ -140,6 +147,8 @@ torch.backends.cudnn.deterministic = True
 
 
 if __name__ == "__main__":
+    import os
+    os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
     args = parse_args()
     device = torch.device(args.device)
 
@@ -148,6 +157,8 @@ if __name__ == "__main__":
     cudnn.benchmark = True
 
     n_layer,layer_share = get_num_hidden_layer(net,args.model)
+    print(args.max_episodes)
+    print('layer_share:{};n_layer:{}'.format(layer_share, n_layer))
 
     if args.dataset == "imagenet":
         path = args.data_root
@@ -161,7 +172,7 @@ if __name__ == "__main__":
         path = os.path.join(args.data_root, "datasets")
 
         train_loader, val_loader, n_class = get_split_train_valset_CIFAR(args.dataset, args.data_bsize, args.n_worker, args.train_size, args.val_size,
-                                                                         data_root=path, use_real_val=False,
+                                                                         data_root=path, use_real_val=True,
                                                                          shuffle=True)
         input_x = torch.randn([1,3,32,32]).to(device)
     elif args.dataset == "cifar100":
@@ -173,7 +184,13 @@ if __name__ == "__main__":
     else:
         raise NotImplementedError
 
-
+    # 新增数据集与模型类别数一致性检查
+    if args.dataset == "cifar10":
+        assert n_class == 10, f"模型输出类别数{n_class}与CIFAR10数据集要求的10类不匹配"
+    elif args.dataset == "cifar100":
+        assert n_class == 100, f"模型输出类别数{n_class}与CIFAR100数据集要求的100类不匹配"
+    elif args.dataset == "imagenet":
+        assert n_class == 1000, f"模型输出类别数{n_class}与ImageNet数据集要求的1000类不匹配"
 
     env = graph_env(net,n_layer,args.dataset,val_loader,args.compression_ratio,args.g_in_size,args.log_dir,input_x,args.max_timesteps,args.model,device)
     betas = (0.9, 0.999)
@@ -181,7 +198,7 @@ if __name__ == "__main__":
 
     # search(env)
     search(env,agent, update_timestep=args.update_timestep,max_timesteps=args.max_timesteps, max_episodes=args.max_episodes,
-           log_interval=10, solved_reward=args.solved_reward, random_seed=args.seed)
+           log_interval=args.log_interval, solved_reward=args.solved_reward, random_seed=args.seed, log_dir=args.log_dir)
 #python -W ignore gnnrl_network_pruning.py --dataset cifar10 --model resnet56 --compression_ratio 0.4 --log_dir ./logs --val_size 5000
 #python -W ignore gnnrl_network_pruning.py --lr_c 0.01 --lr_a 0.01 --dataset cifar100 --bsize 32 --model shufflenetv2 --compression_ratio 0.2 --warmup 100 --pruning_method cp --val_size 1000 --train_episode 300 --log_dir ./logs
 #python -W ignore gnnrl_network_pruning.py --dataset imagenet --model mobilenet --compression_ratio 0.2 --val_size 5000  --log_dir ./logs --data_root ../code/data/datasets

@@ -1,4 +1,5 @@
 import os
+from sysconfig import get_path
 
 import torch
 from torchvision import models
@@ -28,6 +29,7 @@ def load_model(model_name,data_root=None,device=None):
         net = torch.nn.DataParallel(net)
         path = os.path.join(package_directory,'..','networks', "pretrained_models",'cifar10', 'resnet110.th')
         checkpoint = torch.load(path, map_location=device)
+        print('path:{}'.format(path))
         net.load_state_dict(checkpoint['state_dict'])
 
     elif model_name == "resnet32":
@@ -56,6 +58,7 @@ def load_model(model_name,data_root=None,device=None):
         net = models.vgg16(pretrained=True).eval()
         net = torch.nn.DataParallel(net)
     elif model_name == "mobilenetv2":
+        print("load mobilenetv2")
         net = models.mobilenet_v2(pretrained=True)
         net = torch.nn.DataParallel(net)
 
@@ -81,14 +84,20 @@ def load_model(model_name,data_root=None,device=None):
         net.load_state_dict(sd)
         net = torch.nn.DataParallel(net)
     elif model_name == 'shufflenetv2':
-        from gnnrl.networks.shufflenetv2 import shufflenetv2
-        net = shufflenetv2()
-        print('=> Resuming from checkpoint..')
-        path = os.path.join(data_root, "pretrained_models", 'shufflenetv2.pth.tar')
-        checkpoint = torch.load(path)
-        sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
-        net.load_state_dict(sd)
+        # from gnnrl.networks.shufflenetv2 import shufflenetv2
+        # net = shufflenetv2()
+        # print('=> Resuming from checkpoint..')
+        # path = os.path.join(data_root, "pretrained_models", 'shufflenetv2.pth.tar')
+        # checkpoint = torch.load(path)
+        # sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
+        # net.load_state_dict(sd)
+        # net = torch.nn.DataParallel(net)
+        # net = models.shufflenet_v2_x0_5(pretrained=True)
+        # net = models.shufflenet_v2_x1_5(pretrained=True)
+        # net = models.shufflenet_v2_x2_0(pretrained=True)
+        net = models.shufflenet_v2_x1_0(pretrained=True)
         net = torch.nn.DataParallel(net)
+
 
     else:
         raise KeyError

@@ -3,7 +3,15 @@ import time
 import argparse
 import shutil
 import math
+import sys
+import os
+from cmath import phase
 
+# 获取当前文件的上级目录路径
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+# 将上级目录路径添加到 sys.path
+sys.path.append(parent_dir)
 import torch
 import torch.nn as nn
 import numpy as np
@@ -15,6 +23,9 @@ from gnnrl.networks import resnet
 from gnnrl.utils.train_utils import accuracy, AverageMeter, progress_bar, get_output_folder
 from gnnrl.graph_env.network_pruning import  channel_pruning
 from gnnrl.utils.split_dataset import get_dataset
+from gnnrl.graph_env.flops_calculation import flops_caculation_forward
+
+
 def weights_init(m):
     if isinstance(m, nn.Conv2d):
         m.reset_parameters()
@@ -137,7 +148,7 @@ def get_model():
             path = args.ckpt_path
             checkpoint = torch.load(path)
             sd = checkpoint['state_dict'] if 'state_dict' in checkpoint else checkpoint
-            net.load_state_dict(sd)
+            net.load_state_dict(sd,False)
         #net.apply(weights_init)
         for name,layer in net.named_modules():
             if hasattr(layer, 'reset_parameters'):
@@ -362,6 +373,8 @@ def test(epoch, test_loader, save=True):
     top5 = AverageMeter()
     end = time.time()
 
+    record_data = ''
+
     with torch.no_grad():
         for batch_idx, (inputs, targets) in enumerate(test_loader):
             if use_cuda:
@@ -380,6 +393,44 @@ def test(epoch, test_loader, save=True):
 
             progress_bar(batch_idx, len(test_loader), 'Loss: {:.3f} | Acc1: {:.3f}% | Acc5: {:.3f}%'
                          .format(losses.avg, top1.avg, top5.avg))
+        if save:
+            record_data = top1.avg
+            record_data = f'Epoch:{epoch} Acc1:{record_data}\n'
+            with open(r"{}/acc1_data.txt".format(log_dir), 'a') as f:
+                f.write(record_data)
+
+
+        # total_params = sum(p.numel() for p in net.parameters())
+        # print(f"Current model Total parameters: {total_params:,} ({total_params / 1e6:.2f}M)")
+        # # 新增FLOPs计算逻辑
+        # input_shape = (3, 224, 224) if args.dataset == 'imagenet' else (3, 32, 32)
+        # input_x = torch.randn(1, *input_shape).cuda()
+        # try:
+        #     flops, _ = flops_caculation_forward(net, args.model, input_x)
+        #     total_flops = sum(flops)
+        #     print(f"Current model FLOPs: {total_flops / 1e9:.2f} GFLOPs")
+        # except NotImplementedError as e:
+        #     print(f"FLOPs calculation failed: {e}")
+
+        # # 计算原始模型的FLOPs和参数量
+        # # 修正原始模型加载错误
+        # original_model_name = 'resnet110'
+        # o_net = resnet.__dict__[original_model_name]()
+        # o_net = torch.nn.DataParallel(o_net)  # 删除:torch.nn.DataParallel(net)
+        # path = "E:\\GraduationProject\\GNNRL_1\\GNN-RL-Model-Compression\\gnnrl\\networks\\pretrained_models\\cifar10\\resnet110.th"
+        # checkpoint = torch.load(path, map_location='cuda')
+        # o_net.load_state_dict(checkpoint['state_dict'])
+        # o_net.eval()  # 添加模型评估模式
+        #
+        # # 计算原始模型参数量
+        # o_total_params = sum(p.numel() for p in o_net.parameters())
+        # print(f"Original {original_model_name} parameters: {o_total_params:,} ({o_total_params / 1e6:.2f}M)")
+        #
+        # # 计算原始模型FLOPs
+        # input_shape_original = (3, 32, 32)  # CIFAR-10输入尺寸
+        # input_x_original = torch.randn(1, *input_shape_original).cuda()
+        # o_flops, _ = flops_caculation_forward(o_net, original_model_name, input_x_original)
+        # print(f"Original {original_model_name} FLOPs: {sum(o_flops)/1e9:.2f} GFLOPs")
 
     if save:
         # writer.add_scalar('loss/test', losses.avg, epoch)
@@ -390,6 +441,10 @@ def test(epoch, test_loader, save=True):
         if top1.avg > best_acc:
             best_acc = top1.avg
             is_best = True
+            record_data = top1.avg
+            record_data = f'Epoch:{epoch} Acc1:{record_data}\n'
+            with open(r"{}/best_acc1_data.txt".format(log_dir), 'w') as f:
+                f.write(record_data)
 
         print('Current best acc: {}'.format(best_acc))
         save_checkpoint({
@@ -501,3 +556,8 @@ python -W ignore gnnrl_fine_tune.py \
     
     --finetuning
 '''
+
+
+
+
+

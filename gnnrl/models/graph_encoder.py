@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from gnnrl.models.multi_stage_gcn import multi_stage_conv as gcn
+# from gnnrl.models.multi_stage_gcn import multi_stage_conv as gcn
 from torch_geometric.nn import GCNConv
 from torch_geometric.nn import global_mean_pool
 import torch.nn.functional as F
